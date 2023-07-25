@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Reset all tables
 --
 
+DROP TABLE IF EXISTS `status`;
 DROP TABLE IF EXISTS `age_interests`;
 DROP TABLE IF EXISTS `gender_interests`;
 DROP TABLE IF EXISTS `hobby_interests`;
@@ -35,6 +36,16 @@ DROP TABLE IF EXISTS `user_interaction`;
 DROP TABLE IF EXISTS `user_photo`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `gender`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `status`
+--
+
+CREATE TABLE `status` (
+  `status_name` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -152,6 +163,12 @@ CREATE TABLE `age_interests` (
 --
 -- Indexes for table `age_interests`
 --
+ALTER TABLE `status`
+  ADD PRIMARY KEY (`status_name`);
+
+--
+-- Indexes for table `age_interests`
+--
 ALTER TABLE `age_interests`
   ADD PRIMARY KEY (`user_ID`);
 
@@ -255,7 +272,8 @@ ALTER TABLE `user_email`
 --
 ALTER TABLE `user_interaction`
   ADD CONSTRAINT `user_interaction_ibfk_1` FOREIGN KEY (`user_ID_1`) REFERENCES `user` (`user_ID`),
-  ADD CONSTRAINT `user_interaction_ibfk_2` FOREIGN KEY (`user_ID_2`) REFERENCES `user` (`user_ID`);
+  ADD CONSTRAINT `user_interaction_ibfk_2` FOREIGN KEY (`user_ID_2`) REFERENCES `user` (`user_ID`),
+  ADD CONSTRAINT `user_interaction_ibfk_3` FOREIGN KEY (`status`) REFERENCES `status` (`status_name`);
 
 --
 -- Constraints for table `user_photo`
