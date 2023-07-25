@@ -21,6 +21,21 @@ SET time_zone = "+00:00";
 -- Database: `ezavarel`
 --
 
+
+--
+-- Reset all tables
+--
+
+DROP TABLE IF EXISTS `age_interests`;
+DROP TABLE IF EXISTS `gender_interests`;
+DROP TABLE IF EXISTS `hobby_interests`;
+DROP TABLE IF EXISTS `hobbies`;
+DROP TABLE IF EXISTS `user_email`;
+DROP TABLE IF EXISTS `user_interaction`;
+DROP TABLE IF EXISTS `user_photo`;
+DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `gender`;
+
 -- --------------------------------------------------------
 
 --
@@ -117,13 +132,33 @@ CREATE TABLE `user_photo` (
   `photo_pos` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `age_interests`
+--
+
+CREATE TABLE `age_interests` (
+  `user_ID` varchar(5) NOT NULL,
+  `low_age` int(2),
+  `high_age` int(2)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `age_interests`
+--
+ALTER TABLE `age_interests`
+  ADD PRIMARY KEY (`user_ID`);
+
+--
 -- Indexes for table `gender`
 --
+
 ALTER TABLE `gender`
   ADD PRIMARY KEY (`gender_ID`);
 
@@ -181,6 +216,13 @@ ALTER TABLE `user_photo`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `age_interests`
+--
+ALTER TABLE `age_interests`
+  ADD CONSTRAINT `age_interests_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `user` (`user_ID`);
+
 
 --
 -- Constraints for table `gender_interests`
