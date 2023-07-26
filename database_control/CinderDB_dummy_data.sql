@@ -18,6 +18,7 @@ DELETE FROM age_interests;
 
 INSERT INTO gender VALUES (1, 'Male');
 INSERT INTO gender VALUES (2, 'Female');
+INSERT INTO gender VALUES (3, 'Other');
 
 -- STATUS TABLE INSERTS
 
@@ -50,7 +51,7 @@ INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio
 INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Carolyn', 'King', 'Walsenburg', 'CO', '1960-12-14', 'I can play the flute like its nobodys business, and I can beat you to the bottom of the hill on my snowboard', '2', '00005');
 INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Andrea', 'Tolar', 'Mclain', 'MS', '1940-11-12', 'I am ready to settle down and find my soul mate.', '2', '00006');
 INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Brian', 'Siegle', 'Providence', 'RI', '2000-10-10', 'Lets get an ice cream cone', '1', '00007');
-INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Roy', 'Starr', 'Evansville', 'IN', '1970-12-28', 'The furthest I ever hiked was 2650 miles in one shot.', '1', '00008');
+INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Roy', 'Starr', 'Evansville', 'IN', '1970-12-28', 'The furthest I ever hiked was 2650 miles in one shot.', '3', '00008');
 INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Jeanne', 'Moses', 'Elroy', 'WI', '1996-06-15', 'I play Monopoly competitively', '2', '00009');
 INSERT INTO `user` (`first_name`, `last_name`, `city`, `state`, `birthday`, `bio`, `gender_ID`, `user_ID`) VALUES ('Marie', 'Conley', 'Edinburg', 'IL', '1998-10-29', 'Owner operator of Dun Rite Lawn Maintenance. Call 217-623-0918 for a free quote.', '2', '00010');
 
@@ -89,14 +90,17 @@ INSERT INTO hobby_interests VALUES ('00010', 'archery');
 
 INSERT INTO gender_interests VALUES ('2', '00001');
 INSERT INTO gender_interests VALUES ('1', '00002');
+INSERT INTO gender_interests VALUES ('3', '00002');
 INSERT INTO gender_interests VALUES ('2', '00003');
 INSERT INTO gender_interests VALUES ('1', '00004');
 INSERT INTO gender_interests VALUES ('1', '00005');
 INSERT INTO gender_interests VALUES ('1', '00006');
 INSERT INTO gender_interests VALUES ('2', '00007');
 INSERT INTO gender_interests VALUES ('2', '00008');
+INSERT INTO gender_interests VALUES ('3', '00008');
 INSERT INTO gender_interests VALUES ('1', '00009');
 INSERT INTO gender_interests VALUES ('2', '00010');
+
 
 -- USER INTERACTION TABLE INSERTS
 -- options: 'like', 'dislike', 'block'
