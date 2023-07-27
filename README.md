@@ -4,7 +4,7 @@ A group project for KSU Summer 2023 Database Design course. It uses MySQL as a D
 ## How to get this project to run on your machine
 
 ### Create a personal access token for your Github account
-- Check this (https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)[Github Article] to create a personal access token.
+- Check this [Github Article](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to create a personal access token.
 - Make sure to write down the token before you navigate away from the page.
 
 ### Establish a connection to dbdev with an SSH tunnel
