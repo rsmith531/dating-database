@@ -84,13 +84,13 @@ CREATE TABLE `hobby_interests` (
 
 CREATE TABLE `user` (
   `user_ID` int(5) AUTO_INCREMENT,
-  `first_name` varchar(40) NOT NULL,
-  `last_name` varchar(40) NOT NULL,
-  `city` varchar(40) NOT NULL,
-  `state` varchar(2) NOT NULL,
-  `birthday` date NOT NULL,
-  `bio` varchar(450) NOT NULL,
-  `gender_ID` int(5) NOT NULL,
+  `first_name` varchar(40),
+  `last_name` varchar(40),
+  `city` varchar(40),
+  `state` varchar(2),
+  `birthday` date,
+  `bio` varchar(450),
+  `gender_ID` int(5),
   PRIMARY KEY (`user_ID`)
 );
 
@@ -105,8 +105,7 @@ CREATE TABLE `access_control` (
   `username` varchar(40) NOT NULL,
   `clear_pw` varchar(256) NOT NULL,
   `cipher_pw` varchar(64) NOT NULL,
-  `salt` varchar(20) NOT NULL,
-  `key` varchar(44) NOT NULL
+  `salt` varchar(20) NOT NULL
 );
 
 -- --------------------------------------------------------

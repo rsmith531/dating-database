@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Edit Profile</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	</head>
+	<body>
+		<div class="register">
+			<h1>Complete Profile</h1>
+			<div class="links">
+				<a href="{{ url_for('home') }}">Home</a>
+				<a href="{{ url_for('complete_profile') }}" class="active">Complete Profile</a>
+				<a href="{{ url_for('logout') }}">Logout</a>
+			</div>
+			<form action="{{ url_for('complete_profile') }}" method="post" autocomplete="off">
+				<input type="text" name="firstName" placeholder="First Name" id="firstName" required>
+				<input type="text" name="lastName" placeholder="Last Name" id="lastName" required>
+				<input type="text" name="city" placeholder="City" id="city" required>
+				<input type="text" name="state" placeholder="State (SS)" id="state" required>
+				<input type="text" name="birthday" placeholder="Birthday (YYYY-MM-DD)" id="birthday" required>
+				<input type="text" name="bio" placeholder="Write about yourself!" id="bio" required>
+				<input type="password" name="gender" placeholder="Your gender" id="gender" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Complete Profile">
+			</form>
+		</div>
+	</body>
+</html>
