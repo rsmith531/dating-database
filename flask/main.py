@@ -147,7 +147,7 @@ def register():
         else:
 
             # hash the password
-            hashed_pw, salt = hash_sha256(password, 100)
+            hashed_pw, salt = hash_sha256(password, rounds=100)
 
             # Insert new user into access_control table
 
