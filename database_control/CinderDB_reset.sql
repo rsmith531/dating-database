@@ -33,7 +33,8 @@ COMMIT;
 
 CREATE TABLE `gender` (
   `gender_ID` int(5) AUTO_INCREMENT,
-  `name` varchar(40) NOT NULL
+  `name` varchar(40) NOT NULL,
+  PRIMARY KEY (`gender_ID`)
 );
 
 -- --------------------------------------------------------
@@ -166,12 +167,6 @@ CREATE TABLE `age_interests` (
 --
 ALTER TABLE `status`
   ADD PRIMARY KEY (`status_name`);
-
---
--- Indexes for table `gender`
---
-ALTER TABLE `gender`
-  ADD PRIMARY KEY (`gender_ID`);
 
 --
 -- Indexes for table `gender_interests`

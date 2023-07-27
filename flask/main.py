@@ -76,7 +76,7 @@ def login():
         account = cursor.fetchone()
 
         # Check if an account was returned and if the password hash matches the recalculated hash
-        if account and hash_sha256(password, account['salt'], 100) == account['hashed_pw']:
+        if account and hash_sha256(password, account['salt'], 100) == account['cipher_pw']:
 
             # Create session data, we can access this data in other routes
             session['loggedin'] = True
