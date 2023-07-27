@@ -83,7 +83,7 @@ CREATE TABLE `hobby_interests` (
 --
 
 CREATE TABLE `user` (
-  `user_ID` int(5) NOT NULL,
+  `user_ID` int(5) AUTO_INCREMENT,
   `first_name` varchar(40) NOT NULL,
   `last_name` varchar(40) NOT NULL,
   `city` varchar(40) NOT NULL,
@@ -295,10 +295,6 @@ ALTER TABLE `age_interests`
 
 
 -- DATA POPULATION ------------------------------------------------------------
-
--- DISABLE FOREIGN KEY CHECKS BEFORE RUNNING
-
--- DROP OLD DATA
 
 -- DISABLE FOREIGN KEY CHECKS BEFORE RUNNING
 
