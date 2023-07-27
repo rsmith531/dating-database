@@ -156,7 +156,7 @@ def register():
                            (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)')
 
             # Get the auto generated user_ID from the user table
-            cursor.execute('SELECT * FROM user WHERE id = LAST_INSERT_ID()')
+            cursor.execute('SELECT * FROM user WHERE user_id = LAST_INSERT_ID()')
             new_user = cursor.fetchone()
 
             # Insert the new user into the access_control table using the generated user_ID
