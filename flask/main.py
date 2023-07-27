@@ -1,8 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+''' A flask implementation of a database-connected website
+
+    Developed by:
+        Sidney Raabe
+        Dennis Saralino
+        Ryan Smith
+        Eric Stauss
+        Erik Zavarelli
+
+    For:
+        CS 33007 Database Systems
+        Summer 2023
+        Kent State University
+'''
+
+import re
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-import re
 from static.passwordhash import hash_sha256 # custom hashing functions for passwords
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
 
@@ -134,20 +149,22 @@ def register():
             # hash the password
             hashed_pw, salt = hash_sha256(password, 100)
 
-            # Account doesnt exists and the form data is valid, now insert new account into accounts table
+            # Insert new user into access_control table
 
             # First insert a new empty user into the user table to get a user_ID
-            cursor.execute('INSERT INTO user VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)')
+            cursor.execute('INSERT INTO user VALUES \
+                           (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)')
 
             # Get the auto generated user_ID from the user table
             cursor.execute('SELECT * FROM user WHERE id = LAST_INSERT_ID()')
             new_user = cursor.fetchone()
 
             # Insert the new user into the access_control table using the generated user_ID
-            cursor.execute('INSERT INTO access_control VALUES (%s, %s, %s, %s, %s)', (new_user['user_ID'], username, password, hashed_pw, salt))
+            cursor.execute('INSERT INTO access_control VALUES (%s, %s, %s, %s, %s)',
+                           (new_user['user_ID'], username, password, hashed_pw, salt))
             mysql.connection.commit()
 
-            # Create session data to replicate login process, we can access this data in other routes
+            # Create session data to replicate login process
             session['loggedin'] = True
             session['id'] = new_user['user_ID']
             session['username'] = username
@@ -196,6 +213,15 @@ def complete_profile():
 
         # query to update user with profile information
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        # Check if the gender is new for the table
+        cursor.execute ('SELECT * FROM gender WHERE name = %s;', (gender,))
+        gender_fetch = cursor.fetchone()
+        if not gender_fetch:
+            cursor.execute('INSERT INTO gender VALUES (NULL, %s)', (gender,))
+            cursor.execute ('SELECT * FROM gender WHERE name = %s;', (gender,))
+            gender_fetch = cursor.fetchone()
+
         # Insert the new user into the access_control table using the generated user_ID
         cursor.execute('UPDATE user SET first_name = %s,\
                                         last_name = %s,\
@@ -205,9 +231,8 @@ def complete_profile():
                                         bio = %s,\
                                         gender = %s\
                                         WHERE user_id = session[id];',
-                        (first_name, last_name, city, state, birthday, bio, gender))
+                    (first_name, last_name, city, state, birthday, bio, gender_fetch['gender_ID']))
 
-        # TODO handle gender_id
         mysql.connection.commit()
 
     elif request.method == 'POST':
@@ -240,7 +265,7 @@ def home():
 
         # User is loggedin show them the home page
         return render_template('home.html', username=session['username'])
-       
+
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
@@ -262,14 +287,19 @@ def profile():
 
         # Show the profile page with account info
         return render_template('profile.html', account=account)
-    
+
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
 
-######################
-# ADD NEW PAGES HERE #
-######################
+########################
+## ADD NEW PAGES HERE ##
+########################
+
+@app.route('/newpage')
+def newpage():
+    ''' describe the function of the page
+    '''
 
 
 # ----------------------------------------------------------------------------------------- main --

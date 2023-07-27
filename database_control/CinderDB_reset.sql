@@ -32,7 +32,7 @@ COMMIT;
 --
 
 CREATE TABLE `gender` (
-  `gender_ID` int(5) NOT NULL,
+  `gender_ID` int(5) AUTO_INCREMENT,
   `name` varchar(40) NOT NULL
 );
 
