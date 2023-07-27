@@ -14,10 +14,29 @@
 '''
 
 import re
+from logging.config import dictConfig
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from static.passwordhash import hash_sha256 # custom hashing functions for passwords
 from flask import Flask, render_template, request, redirect, url_for, session
+
+# Configure application logging
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__)
 
@@ -40,14 +59,17 @@ mysql = MySQL(app)
 def index():
     ''' redirect to login if logged out or to home page if logged in
     '''
+    app.logger.info('index: user at index page')
 
     # Check if user is loggedin
     if 'loggedin' in session:
 
         # User is loggedin show them the home page
+        app.logger.info('index: user rerouted to home page')
         return redirect(url_for('home'))
 
     # User is not loggedin redirect to login page
+    app.logger.info('index: user rerouted to login page')
     return redirect(url_for('login'))
 
 
@@ -57,12 +79,15 @@ def index():
 def login():
     ''' login page
     '''
+    app.logger.info('login: user at login page')
 
     # Output message if something goes wrong...
     msg = ''
 
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+
+        app.logger.info('login: user submitted good login form')
 
         # Create variables for easy access
         username = request.form['username']
@@ -71,20 +96,30 @@ def login():
         # Check if account exists using MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM access_control WHERE username = %s', (username,))
+        app.logger.info('login: access_control queried for username')
 
         # Fetch one record and return result
         account = cursor.fetchone()
+        app.logger.info('login: access_control returned %s', account)
 
         # Check if an account was returned and if the password hash matches the recalculated hash
-        if account and hash_sha256(password, account['salt'], 100) == account['cipher_pw']:
+        if account:
 
-            # Create session data, we can access this data in other routes
-            session['loggedin'] = True
-            session['id'] = account['user_ID']
-            session['username'] = account['username']
+            app.logger.info('login: account found, checking password')
 
-            # Redirect to home page
-            return redirect(url_for('home'))
+            if hash_sha256(password, account['salt'], 100) == account['cipher_pw']:
+
+                app.logger.info('login: password matches, logging in')
+
+                # Create session data, we can access this data in other routes
+                session['loggedin'] = True
+                session['id'] = account['user_ID']
+                session['username'] = account['username']
+                app.logger.info('login: session information created')
+
+                # Redirect to home page
+                app.logger.info('login: user rerouted to home page')
+                return redirect(url_for('home'))
 
         else:
             # Account doesnt exist or username/password incorrect
