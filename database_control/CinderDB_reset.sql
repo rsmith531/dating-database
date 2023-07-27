@@ -83,14 +83,15 @@ CREATE TABLE `hobby_interests` (
 --
 
 CREATE TABLE `user` (
-  `user_ID` int(5) NOT NULL,
+  `user_ID` int(5) AUTO_INCREMENT,
   `first_name` varchar(40) NOT NULL,
   `last_name` varchar(40) NOT NULL,
   `city` varchar(40) NOT NULL,
   `state` varchar(2) NOT NULL,
   `birthday` date NOT NULL,
   `bio` varchar(450) NOT NULL,
-  `gender_ID` int(5) NOT NULL
+  `gender_ID` int(5) NOT NULL,
+  PRIMARY KEY (`user_ID`)
 );
 
 -- --------------------------------------------------------
@@ -199,7 +200,6 @@ ALTER TABLE `hobby_interests`
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`user_ID`),
   ADD UNIQUE KEY `user_ID` (`user_ID`),
   ADD KEY `gender_ID` (`gender_ID`);
 
