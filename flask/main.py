@@ -303,8 +303,8 @@ def complete_profile():
                                         birthday = %s,\
                                         bio = %s,\
                                         gender = %s\
-                                        WHERE user_id = session[id];',
-                    (first_name, last_name, city, state, birthday, bio, gender_fetch['gender_ID']))
+                                        WHERE user_id = %s;',
+                    (first_name, last_name, city, state, birthday, bio, gender_fetch['gender_ID'], session[id]))
         app.logger.info('complete_profile: user profile updated with new information')
 
         mysql.connection.commit()
