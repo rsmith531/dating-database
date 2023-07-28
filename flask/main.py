@@ -385,7 +385,7 @@ def profile():
 
         # Calculate the user's age from their birthday
         days_in_year = 365.2425
-        profile_date= date.date(profile_results['birthday'][:4], profile_results['birthday'][5:7], profile_results['birthday'][8:10])
+        profile_date= date(profile_results['birthday'][:4], profile_results['birthday'][5:7], profile_results['birthday'][8:10])
         age_calc = int((date.today() - profile_date).days / days_in_year)
 
         # Get the user's gender from gender_ID
