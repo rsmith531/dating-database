@@ -232,7 +232,7 @@ def register():
             app.logger.info('register: session information created: USERNAME: %s, ID: %s',
                             session['username'], session['id'])
 
-            redirect(url_for('complete_profile'))
+            return redirect(url_for('complete_profile'))
             msg = 'You have successfully registered!'
 
 
@@ -312,7 +312,7 @@ def complete_profile():
 
         mysql.connection.commit()
         app.logger.info('complete_profile: user profile information committed')
-        redirect(url_for('home'))
+        return redirect(url_for('home'))
 
     elif request.method == 'POST':
 
