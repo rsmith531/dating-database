@@ -303,7 +303,7 @@ def complete_profile():
                                         state = %s,\
                                         birthday = %s,\
                                         bio = %s,\
-                                        gender = %s\
+                                        gender_ID = %s \
                                         WHERE user_id = %s;',
                     (first_name, last_name, city, state, birthday, bio, 
                      gender_fetch['gender_ID'], session[id]))
