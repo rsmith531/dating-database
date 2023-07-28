@@ -329,7 +329,7 @@ def complete_profile():
     app.logger.info('complete_profile: user returned %s', user)
 
     # Get the user's gender from gender_ID
-    cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (profile_results['gender_ID'],))
+    cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (user['gender_ID'],))
     gender_results = cursor.fetchone()
     app.logger.info('complete_profile: gender returned %s', gender_results)
 
