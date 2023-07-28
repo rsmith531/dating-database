@@ -297,14 +297,14 @@ def complete_profile():
 
 
         # Insert the new user into the access_control table using the generated user_ID
-        cursor.execute('UPDATE user SET first_name = %s,\
-                                        last_name = %s,\
-                                        city = %s,\
-                                        state = %s,\
-                                        birthday = %s,\
-                                        bio = %s,\
-                                        gender_ID = %s \
-                                        WHERE user_ID = %s',
+        cursor.execute('UPDATE user SET first_name = %s,'\
+                                        'last_name = %s,'\
+                                        'city = %s,'\
+                                        'state = %s,'\
+                                        'birthday = %s,'\
+                                        'bio = %s,'\
+                                        'gender_ID = %s '\
+                                        'WHERE user_ID = %s',
                     (first_name, last_name, city, state, birthday, bio, 
                      gender_fetch['gender_ID'], session[id]))
         app.logger.info('complete_profile: user profile updated with new information')
