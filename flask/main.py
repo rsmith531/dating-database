@@ -442,7 +442,7 @@ def change_password():
         if hash_check != account['cipher_pw']:
 
             app.logger.info('change_password: old password does not match')
-            msg = 'Old password does not match!'
+            msg = 'Password change could not be completed'
             return render_template('change_password.html', msg=msg)
 
         # hash the new password and update the database
@@ -455,7 +455,6 @@ def change_password():
                           (new_pw_1, hashed_pw, salt, session['id']))
         mysql.connection.commit()
         app.logger.info('change_password: password updated in database')
-        redirect(url_for('profile'))
 
     return render_template('change_password.html', msg=msg)
 
