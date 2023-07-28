@@ -340,7 +340,9 @@ def home():
         app.logger.info('home: user returned %s', user)
 
         # redirect to complete profile if profile is not complete
-        if user['first_name'] == 'NULL':
+        if user['first_name'] == 'None' or user['last_name'] == 'None' or user['city'] == 'None' \
+            or user['state'] == 'None' or user['birthday'] == 'None' or user['bio'] == 'None' \
+                or user['gender_id'] == 'None':
 
             app.logger.info('home: user profile is not complete, redirecting to complete profile')
             return redirect(url_for('complete_profile'))
@@ -369,7 +371,8 @@ def profile():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM access_control WHERE user_id = %s', (session['id'],))
         account = cursor.fetchone()
-        app.logger.info('profile: access_control returned %s', account)
+        app.logger.info('profile: access_control returned USER: '\
+                        '%s PASSWORD: %s', account['username'], account['cipher_pw'])
 
         # Show the profile page with account info
         return render_template('profile.html', account=account)
