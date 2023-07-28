@@ -313,6 +313,7 @@ def complete_profile():
 
         mysql.connection.commit()
         app.logger.info('complete_profile: user profile information committed')
+        redirect(url_for('home'))
 
     elif request.method == 'POST':
 
