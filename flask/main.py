@@ -120,7 +120,8 @@ def login():
                 session['loggedin'] = True
                 session['id'] = account['user_ID']
                 session['username'] = account['username']
-                app.logger.info('login: session information created')
+                app.logger.info('login: session information created: USERNAME: %s, ID: %s',
+                                session['username'], session['id'])
 
                 # Redirect to home page
                 app.logger.info('login: user rerouted to home page')
@@ -229,7 +230,8 @@ def register():
             session['loggedin'] = True
             session['id'] = new_user['user_ID']
             session['username'] = username
-            app.logger.info('register: session information created')
+            app.logger.info('register: session information created: USERNAME: %s, ID: %s',
+                            session['username'], session['id'])
 
             redirect(url_for('complete_profile'))
             msg = 'You have successfully registered!'
@@ -291,8 +293,7 @@ def complete_profile():
             cursor.execute ('SELECT * FROM gender WHERE name = %s;', (gender,))
             gender_fetch = cursor.fetchone()
 
-        else:
-            app.logger.info('complete_profile: gender returned %s', gender_fetch)
+        app.logger.info('complete_profile: gender returned %s', gender_fetch)
 
 
         # Insert the new user into the access_control table using the generated user_ID
@@ -304,7 +305,8 @@ def complete_profile():
                                         bio = %s,\
                                         gender = %s\
                                         WHERE user_id = %s;',
-                    (first_name, last_name, city, state, birthday, bio, gender_fetch['gender_ID'], session[id]))
+                    (first_name, last_name, city, state, birthday, bio, 
+                     gender_fetch['gender_ID'], session[id]))
         app.logger.info('complete_profile: user profile updated with new information')
 
         mysql.connection.commit()
