@@ -100,14 +100,18 @@ def login():
 
         # Fetch one record and return result
         account = cursor.fetchone()
-        app.logger.info('login: access_control returned %s', account)
+        app.logger.info('login: access_control returned USER: %s PASSWORD: %s', account['username'], account['cipher_pw'])
 
         # Check if an account was returned and if the password hash matches the recalculated hash
         if account:
 
             app.logger.info('login: account found, checking password')
 
-            if hash_sha256(password, account['salt'], 100) == account['cipher_pw']:
+            hash_check, salt_check = hash_sha256(password, account['salt'], 100)
+            app.logger.debug('hash_sha256: HASHED PASSWORD: %s', hash_check)
+            app.logger.debug('hash_sha256: SALT: %s', salt_check)
+            
+            if hash_check == account['cipher_pw']:
 
                 app.logger.info('login: password matches, logging in')
 
@@ -123,6 +127,7 @@ def login():
 
         else:
             # Account doesnt exist or username/password incorrect
+            app.logger.info('login: account not found or password incorrect')
             msg = 'Incorrect username/password!'
 
     # Show the login form with message (if any)
