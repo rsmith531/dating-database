@@ -303,8 +303,8 @@ def complete_profile():
                                         state = %s,\
                                         birthday = %s,\
                                         bio = %s,\
-                                        gender_ID = %s \
-                                        WHERE user_id = %s;',
+                                        gender_ID = %i \
+                                        WHERE user_id = %i;',
                     (first_name, last_name, city, state, birthday, bio, 
                      gender_fetch['gender_ID'], session[id]))
         app.logger.info('complete_profile: user profile updated with new information')
