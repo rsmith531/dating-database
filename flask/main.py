@@ -328,6 +328,11 @@ def complete_profile():
     user = cursor.fetchone()
     app.logger.info('complete_profile: user returned %s', user)
 
+    # Get the user's gender from gender_ID
+    cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (profile_results['gender_ID'],))
+    gender_results = cursor.fetchone()
+    app.logger.info('complete_profile: gender returned %s', gender_results)
+
     # first_name = user['first_name']
     # last_name = user['last_name']
     # city = user['city']
@@ -338,7 +343,7 @@ def complete_profile():
 
 
     # Show new profile form with message (if any)
-    return render_template('complete_profile.html', msg=msg, user=user)
+    return render_template('complete_profile.html', msg=msg, user=user, gender=gender_results['name'])
 
 
 # ------------------------------------------------------------------- http://localhost:5001/home --

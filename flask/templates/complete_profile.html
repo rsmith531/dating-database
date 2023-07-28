@@ -15,13 +15,13 @@
 				<a href="{{ url_for('logout') }}">Logout</a>
 			</div>
 			<form action="{{ url_for('complete_profile') }}" method="post" autocomplete="off">
-				<input type="text" name="firstName" placeholder="First Name" id="firstName" autofocus required>
-				<input type="text" name="lastName" placeholder="Last Name" id="lastName" required>
-				<input type="text" name="city" placeholder="City" id="city" required>
-				<input type="text" name="state" placeholder="State (SS)" id="state" required>
-				<input type="text" name="birthday" placeholder="Birthday (YYYY-MM-DD)" id="birthday" required>
-				<input type="text" name="bio" placeholder="Write about yourself!" id="bio" required>
-				<input type="text" name="gender" placeholder="Your gender" id="gender" required>
+				<input type="text" name="firstName" placeholder="First Name" id="firstName" value="{{ user['first_name'] }}" autofocus required>
+				<input type="text" name="lastName" placeholder="Last Name" id="lastName" value="{{ user['last_name'] }}" required>
+				<input type="text" name="city" placeholder="City" id="city" value="{{ user['city'] }}" required>
+				<input type="text" name="state" placeholder="State (SS)" id="state" value="{{ user['state'] }}" required>
+				<input type="text" name="birthday" placeholder="Birthday (YYYY-MM-DD)" id="birthday" value="{{ user['birthday'] }}" required>
+				<input type="text" name="bio" placeholder="Write about yourself!" id="bio" value="{{ user['bio'] }}" required>
+				<input type="text" name="gender" placeholder="Your gender" id="gender" value="{{ gender }}" required>
 				<div class="msg">{{ msg }}</div>
 				<input type="submit" value="Complete Profile">
 			</form>
