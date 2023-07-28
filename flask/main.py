@@ -15,11 +15,11 @@
 
 import re
 from logging.config import dictConfig
+from datetime import date
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from static.passwordhash import hash_sha256 # custom hashing functions for passwords
 from flask import Flask, render_template, request, redirect, url_for, session
-from datetime import date
 
 # Configure application logging
 
@@ -233,8 +233,8 @@ def register():
             app.logger.info('register: session information created: USERNAME: %s, ID: %s',
                             session['username'], session['id'])
 
-            return redirect(url_for('complete_profile'))
             msg = 'You have successfully registered!'
+            return redirect(url_for('complete_profile'))
 
 
     elif request.method == 'POST':
@@ -378,7 +378,7 @@ def profile():
         account = cursor.fetchone()
         app.logger.info('profile: access_control returned USER: '\
                         '%s PASSWORD: %s', account['username'], account['cipher_pw'])
-        
+
         # Get the user's profile details from the database
         cursor.execute('SELECT * FROM user WHERE user_ID = %s', (session['id'],))
         profile_results = cursor.fetchone()
@@ -386,7 +386,6 @@ def profile():
 
         # Calculate the user's age from their birthday
         days_in_year = 365.2425
-        #profile_date= date(profile_results['birthday'][:4], profile_results['birthday'][5:7], profile_results['birthday'][8:10])
         age_calc = int((date.today() - profile_results['birthday']).days / days_in_year)
 
         # Get the user's gender from gender_ID
@@ -395,7 +394,8 @@ def profile():
 
 
         # Show the profile page with account info
-        return render_template('profile.html', account=account, profile=profile_results, age=age_calc, gender=gender_results['name'])
+        return render_template('profile.html', account=account, profile=profile_results, \
+                               age=age_calc, gender=gender_results['name'])
 
     # User is not loggedin redirect to login page
     app.logger.info('profile: user is not logged in, redirecting to login page')
@@ -464,7 +464,7 @@ def change_password():
         mysql.connection.commit()
         app.logger.info('change_password: password updated in database')
         msg = 'Password changed successfully!'
-        
+
         return render_template('change_password.html', msg=msg)
 
 
@@ -478,7 +478,7 @@ def delete_account():
 
     # Output message if something goes wrong...
     msg = ''
-    
+
     # Check if user is loggedin
     if 'loggedin' in session:
 
@@ -514,7 +514,7 @@ def delete_account():
         mysql.connection.commit()
         app.logger.info('delete_account: user deleted from database')
         return redirect(url_for('logout'))
-        
+
     return render_template('delete_account.html', msg=msg)
 
 
