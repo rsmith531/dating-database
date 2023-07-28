@@ -20,6 +20,15 @@ A group project for KSU Summer 2023 Database Design course. It uses MySQL as a D
 - If you need to check out a remote branch you are working in:
     - `git checkout --track origin/(your branch name)`
 
+### Populate your database with the schema and dummy data
+- Download `CinderDB_reset_and_fill.sql` from the repo.
+- Log into phpMyAdmin.
+- Navigate to your database.
+- Select `import` from the top navigation bar.
+- Select `Choose file` and choose `CinderDB_reset_and_fill.sql`.
+- Disable `Enable foreign key checks`.
+- Press `Go`.
+
 ### Run the Flask server
 - `cd flask`
 - Update the MySQL credentials in `main.py` to your own credentials.
