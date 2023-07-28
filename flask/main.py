@@ -340,8 +340,8 @@ def home():
         app.logger.info('home: user returned %s', user)
 
         # redirect to complete profile if profile is not complete
-        if user['first_name'] == 'None' or user['last_name'] == 'None' or user['city'] == 'None' \
-            or user['state'] == 'None' or user['birthday'] == 'None' or user['bio'] == 'None':
+        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
+            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
 
             app.logger.info('home: user profile is not complete, redirecting to complete profile')
             return redirect(url_for('complete_profile'))
