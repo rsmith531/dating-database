@@ -19,6 +19,7 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from static.passwordhash import hash_sha256 # custom hashing functions for passwords
 from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import date
 
 # Configure application logging
 
@@ -370,15 +371,30 @@ def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
 
-        # We need all the account info for the user so we can display it on the profile page
+        # Get the user's account details from the database
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM access_control WHERE user_id = %s', (session['id'],))
+        cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['id'],))
         account = cursor.fetchone()
         app.logger.info('profile: access_control returned USER: '\
                         '%s PASSWORD: %s', account['username'], account['cipher_pw'])
+        
+        # Get the user's profile details from the database
+        cursor.execute('SELECT * FROM user WHERE user_ID = %s', (session['id'],))
+        profile_results = cursor.fetchone()
+        app.logger.info('profile: user returned %s', profile_results)
+
+        # Calculate the user's age from their birthday
+        days_in_year = 365.2425
+        profile_date= date.date(profile_results['birthday'][:4], profile_results['birthday'][5:7], profile_results['birthday'][8:10])
+        age_calc = int((date.today() - profile_date).days / days_in_year)
+
+        # Get the user's gender from gender_ID
+        cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (profile_results['gender_ID'],))
+        gender_results = cursor.fetchone()
+
 
         # Show the profile page with account info
-        return render_template('profile.html', account=account)
+        return render_template('profile.html', account=account, profile=profile_results, age=age_calc, gender=gender_results['name'])
 
     # User is not loggedin redirect to login page
     app.logger.info('profile: user is not logged in, redirecting to login page')
