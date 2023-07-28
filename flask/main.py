@@ -110,7 +110,7 @@ def login():
             hash_check, salt_check = hash_sha256(password, account['salt'], 100)
             app.logger.debug('hash_sha256: HASHED PASSWORD: %s', hash_check)
             app.logger.debug('hash_sha256: SALT: %s', salt_check)
-            
+
             if hash_check == account['cipher_pw']:
 
                 app.logger.info('login: password matches, logging in')
@@ -296,7 +296,7 @@ def home():
 
         # Check if user profile is complete
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE id = %s', (session['id'],)) # get from cookie
+        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
         user = cursor.fetchone()
 
         # redirect to complete profile if profile is not complete
