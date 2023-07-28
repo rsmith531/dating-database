@@ -432,7 +432,7 @@ def change_password():
 
         # Get account details from the database
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['ID'],))
+        cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['id'],))
         account = cursor.fetchone()
 
         # Check if the old password matches the stored password
