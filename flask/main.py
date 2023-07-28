@@ -200,7 +200,7 @@ def register():
         else:
 
             app.logger.info('register: account does not exist, creating new account')
-            
+
             # hash the password
             hashed_pw, salt = hash_sha256(password, rounds=100)
             app.logger.info('hash_sha256: HASHED PASSWORD: %s', hashed_pw)
@@ -216,8 +216,7 @@ def register():
             # Get the auto generated user_ID from the user table
             cursor.execute('SELECT * FROM user WHERE user_id = LAST_INSERT_ID()')
             new_user = cursor.fetchone()
-            app.logger.info('register: user returned USER: '\
-                            '%s', new_user['username'])
+            app.logger.info('register: user returned: %s', new_user['user_ID'])
 
             # Insert the new user into the access_control table using the generated user_ID
             cursor.execute('INSERT INTO access_control VALUES (%s, %s, %s, %s, %s)',
