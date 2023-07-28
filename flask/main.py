@@ -403,7 +403,7 @@ def profile():
 
 # -------------------------------------------------------- http://localhost:5001/change_password --
 
-@app.route('/change_password')
+@app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     ''' for updating the user's password
     '''
