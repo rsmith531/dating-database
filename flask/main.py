@@ -455,6 +455,7 @@ def change_password():
                           (new_pw_1, hashed_pw, salt, session['id']))
         mysql.connection.commit()
         app.logger.info('change_password: password updated in database')
+        msg = 'Password changed successfully!'
 
     return render_template('change_password.html', msg=msg)
 
