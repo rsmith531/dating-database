@@ -322,8 +322,23 @@ def complete_profile():
         app.logger.info('complete_profile: user submitted empty form')
         msg = 'Please fill out the form!'
 
+    # Get existing data from user database
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM user WHERE user_ID = %s', (session['id'],))
+    user = cursor.fetchone()
+    app.logger.info('complete_profile: user returned %s', user)
+
+    # first_name = user['first_name']
+    # last_name = user['last_name']
+    # city = user['city']
+    # state = user['state']
+    # birthday = user['birthday']
+    # bio = user['bio']
+    # gender = user['gender_ID']
+
+
     # Show new profile form with message (if any)
-    return render_template('complete_profile.html', msg=msg)
+    return render_template('complete_profile.html', msg=msg, user=user)
 
 
 # ------------------------------------------------------------------- http://localhost:5001/home --

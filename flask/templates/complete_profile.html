@@ -15,7 +15,7 @@
 				<a href="{{ url_for('logout') }}">Logout</a>
 			</div>
 			<form action="{{ url_for('complete_profile') }}" method="post" autocomplete="off">
-				<input type="text" name="firstName" placeholder="First Name" id="firstName" required>
+				<input type="text" name="firstName" placeholder="First Name" id="firstName" autofocus required>
 				<input type="text" name="lastName" placeholder="Last Name" id="lastName" required>
 				<input type="text" name="city" placeholder="City" id="city" required>
 				<input type="text" name="state" placeholder="State (SS)" id="state" required>
