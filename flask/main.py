@@ -401,6 +401,65 @@ def profile():
     return redirect(url_for('login'))
 
 
+# -------------------------------------------------------- http://localhost:5001/change_password --
+
+@app.route('/change_password')
+def change_password():
+    ''' for updating the user's password
+    '''
+    app.logger.info('change_password: user at change password page')
+
+    # Output message if something goes wrong...
+    msg = ''
+
+    if request.method == 'POST' and 'old_pw' in request.form\
+        and 'new_pw_1' in request.form\
+            and 'new_pw_2' in request.form:
+
+        app.logger.info('change_password: user submitted good change_password form')
+
+        # Create variables for easy access
+        old_pw = request.form['old_pw']
+        new_pw_1 = request.form['new_pw_1']
+        new_pw_2 = request.form['new_pw_2']
+
+        # Check if new password matches the repeated new password
+        if new_pw_1 != new_pw_2:
+
+            app.logger.info('change_password: new passwords do not match')
+            msg = 'New passwords do not match!'
+            return render_template('change_password.html', msg=msg)
+
+        # Get account details from the database
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['ID'],))
+        account = cursor.fetchone()
+
+        # Check if the old password matches the stored password
+        hash_check, salt_check = hash_sha256(old_pw, account['salt'], 100)
+        app.logger.info('hash_sha256: HASHED PASSWORD: %s', hash_check)
+        app.logger.info('hash_sha256: SALT: %s', salt_check)
+        if hash_check != account['cipher_pw']:
+
+            app.logger.info('change_password: old password does not match')
+            msg = 'Old password does not match!'
+            return render_template('change_password.html', msg=msg)
+
+        # hash the new password and update the database
+        hashed_pw, salt = hash_sha256(new_pw_1, rounds=100)
+        app.logger.info('hash_sha256: HASHED PASSWORD: %s', hashed_pw)
+        app.logger.info('hash_sha_256: SALT: %s', salt)
+        cursor.execute('UPDATE access_control SET clear_pw = %s, \
+                       cipher_pw = %s, salt = %s \
+                       WHERE user_ID = %s',
+                          (new_pw_1, hashed_pw, salt, session['id']))
+        mysql.connection.commit()
+        app.logger.info('change_password: password updated in database')
+        redirect(url_for('profile'))
+
+    return render_template('change_password.html', msg=msg)
+
+
 ########################
 ## ADD NEW PAGES HERE ##
 ########################

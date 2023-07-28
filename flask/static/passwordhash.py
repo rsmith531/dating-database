@@ -27,7 +27,7 @@ def make_salt(length):
     result = ''.join(choices) # put the list into a string
     return result
 
-def hash_sha256(password, salt=make_salt(20), rounds=1):
+def hash_sha256(password, salt=make_salt(20), rounds=100):
     """ hash a password n times with the SHA 256 algorithm
         parameters: a cleartext password, number of hash rounds
         returns: tuple of (hashed_password, salt)
