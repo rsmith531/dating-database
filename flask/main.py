@@ -480,7 +480,7 @@ def delete_account():
     msg = ''
 
     # Check if user is loggedin
-    if 'loggedin' in session:
+    if 'loggedin' not in session:
 
         # User is not loggedin redirect to login page
         app.logger.info('delete_account: user is not logged in, redirecting to login page')
