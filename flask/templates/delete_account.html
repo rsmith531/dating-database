@@ -16,11 +16,15 @@
 				<a href="{{ url_for('logout') }}">Log Out</a>
 			</div>
 			<form action="{{ url_for('delete_account') }}" method="post" autocomplete="off">
-				<p>Are you sure? Maybe you meant to <a href="{{ url_for('logout') }}">log out</a></p>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Enter Password" id="password" required>
+				<div>
+					<p>Are you sure? Maybe you meant to <a href="{{ url_for('logout') }}">log out</a></p>
+				</div>
+				<div>
+					<label for="password">
+						<i class="fas fa-lock"></i>
+					</label>
+					<input type="password" name="password" placeholder="Enter Password" id="password" required>
+				</div>
 				<div class="msg">{{ msg }}</div>
 				<input type="submit" value="Nah, I'm sure. Get me out of here">
 			</form>
