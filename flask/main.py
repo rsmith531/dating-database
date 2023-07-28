@@ -322,7 +322,7 @@ def profile():
 
         # We need all the account info for the user so we can display it on the profile page
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE id = %s', (session['id'],))
+        cursor.execute('SELECT * FROM access_control WHERE user_id = %s', (session['id'],))
         account = cursor.fetchone()
 
         # Show the profile page with account info
