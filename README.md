@@ -22,5 +22,6 @@ A group project for KSU Summer 2023 Database Design course. It uses MySQL as a D
 
 ### Run the Flask server
 - `cd flask`
+- 
 - `python3 main.py`
 - Access [http://localhost:5001/](http://localhost:5001/) from your web browser.
