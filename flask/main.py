@@ -412,62 +412,121 @@ def change_password():
     # Output message if something goes wrong...
     msg = ''
 
-    if request.method == 'POST' and 'old_pw' in request.form\
-        and 'new_pw_1' in request.form\
-            and 'new_pw_2' in request.form:
+    # Check if user is loggedin
+    if 'loggedin' in session:
 
-        app.logger.info('change_password: user submitted good change_password form')
+        if request.method == 'POST' and 'old_pw' in request.form\
+            and 'new_pw_1' in request.form\
+                and 'new_pw_2' in request.form:
 
-        # Create variables for easy access
-        old_pw = request.form['old_pw']
-        new_pw_1 = request.form['new_pw_1']
-        new_pw_2 = request.form['new_pw_2']
+            app.logger.info('change_password: user submitted good change_password form')
 
-        # Check if new password matches the repeated new password
-        if new_pw_1 != new_pw_2:
+            # Create variables for easy access
+            old_pw = request.form['old_pw']
+            new_pw_1 = request.form['new_pw_1']
+            new_pw_2 = request.form['new_pw_2']
 
-            app.logger.info('change_password: new passwords do not match')
-            msg = 'New passwords do not match!'
+            # Check if new password matches the repeated new password
+            if new_pw_1 != new_pw_2:
+
+                app.logger.info('change_password: new passwords do not match')
+                msg = 'New passwords do not match!'
+                return render_template('change_password.html', msg=msg)
+
+            # Get account details from the database
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['id'],))
+            account = cursor.fetchone()
+
+            # Check if the old password matches the stored password
+            hash_check, salt_check = hash_sha256(old_pw, account['salt'], 100)
+            app.logger.info('hash_sha256: HASHED PASSWORD: %s', hash_check)
+            app.logger.info('hash_sha256: SALT: %s', salt_check)
+            if hash_check != account['cipher_pw']:
+
+                app.logger.info('change_password: old password does not match')
+                msg = 'Password change could not be completed'
+                return render_template('change_password.html', msg=msg)
+
+            # hash the new password and update the database
+            hashed_pw, salt = hash_sha256(new_pw_1, rounds=100)
+            app.logger.info('hash_sha256: HASHED PASSWORD: %s', hashed_pw)
+            app.logger.info('hash_sha_256: SALT: %s', salt)
+            cursor.execute('UPDATE access_control SET clear_pw = %s, \
+                        cipher_pw = %s, salt = %s \
+                        WHERE user_ID = %s',
+                            (new_pw_1, hashed_pw, salt, session['id']))
+            mysql.connection.commit()
+            app.logger.info('change_password: password updated in database')
+            msg = 'Password changed successfully!'
             return render_template('change_password.html', msg=msg)
 
-        # Get account details from the database
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['id'],))
-        account = cursor.fetchone()
+    # User is not loggedin redirect to login page
+    app.logger.info('change_password: user is not logged in, redirecting to login page')
+    return redirect(url_for('login'))
 
-        # Check if the old password matches the stored password
-        hash_check, salt_check = hash_sha256(old_pw, account['salt'], 100)
-        app.logger.info('hash_sha256: HASHED PASSWORD: %s', hash_check)
-        app.logger.info('hash_sha256: SALT: %s', salt_check)
-        if hash_check != account['cipher_pw']:
 
-            app.logger.info('change_password: old password does not match')
-            msg = 'Password change could not be completed'
-            return render_template('change_password.html', msg=msg)
+# --------------------------------------------------------- http://localhost:5001/delete_account --
 
-        # hash the new password and update the database
-        hashed_pw, salt = hash_sha256(new_pw_1, rounds=100)
-        app.logger.info('hash_sha256: HASHED PASSWORD: %s', hashed_pw)
-        app.logger.info('hash_sha_256: SALT: %s', salt)
-        cursor.execute('UPDATE access_control SET clear_pw = %s, \
-                       cipher_pw = %s, salt = %s \
-                       WHERE user_ID = %s',
-                          (new_pw_1, hashed_pw, salt, session['id']))
-        mysql.connection.commit()
-        app.logger.info('change_password: password updated in database')
-        msg = 'Password changed successfully!'
+@app.route('/delete_account', methods=['GET', 'POST'])
+def delete_account():
+    ''' This page lets you delete your account
+    '''
+    app.logger.info('delete_account: user at delete account page')
 
-    return render_template('change_password.html', msg=msg)
+    # Output message if something goes wrong...
+    msg = ''
+    
+    # Check if user is loggedin
+    if 'loggedin' in session:
+
+        # Check if the form is fully completed
+        if request.method == 'POST' and 'password' in request.form:
+
+            # Create variables for easy access
+            password = request.form['password']
+
+            # Get account details from the database
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM access_control WHERE user_ID = %s', (session['id'],))
+            account = cursor.fetchone()
+
+            # Check if the old password matches the stored password
+            hash_check, salt_check = hash_sha256(password, account['salt'], 100)
+            app.logger.info('hash_sha256: HASHED PASSWORD: %s', hash_check)
+            app.logger.info('hash_sha256: SALT: %s', salt_check)
+            if hash_check != account['cipher_pw']:
+
+                app.logger.info('delete_account: password does not match')
+                msg = 'This account could not be deleted'
+                return render_template('delete_account.html', msg=msg)
+
+            # Delete the user from the database
+            cursor.execute('DELETE FROM user WHERE user_ID = %s', (session['id'],))
+            cursor.execute('DELETE FROM access_control WHERE user_ID = %s', (session['id'],))
+            # TODO I think this won't delete items from misc tables. Maybe CASCADING keyword?
+            mysql.connection.commit()
+            app.logger.info('delete_account: user deleted from database')
+            return redirect(url_for('logout'))
+
+    # User is not loggedin redirect to login page
+    app.logger.info('delete_account: user is not logged in, redirecting to login page')
+    return redirect(url_for('login'))
 
 
 ########################
 ## ADD NEW PAGES HERE ##
 ########################
 
+
+# ---------------------------------------------------------------- http://localhost:5001/newpage --
+
 @app.route('/newpage')
 def newpage():
     ''' describe the function of the page
     '''
+    app.logger.info('newpage: user at new page')
+    return redirect(url_for('home'))
 
 
 # ----------------------------------------------------------------------------------------- main --
