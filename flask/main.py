@@ -248,7 +248,6 @@ def register():
 
 
 # ------------------------------------------------------- http://localhost:5001/complete_profile --
-# TODO add autofilled profile info if it exists
 
 @app.route('/complete_profile', methods=['GET', 'POST'])
 def complete_profile():
@@ -333,17 +332,10 @@ def complete_profile():
     gender_results = cursor.fetchone()
     app.logger.info('complete_profile: gender returned %s', gender_results)
 
-    # first_name = user['first_name']
-    # last_name = user['last_name']
-    # city = user['city']
-    # state = user['state']
-    # birthday = user['birthday']
-    # bio = user['bio']
-    # gender = user['gender_ID']
-
 
     # Show new profile form with message (if any)
-    return render_template('complete_profile.html', msg=msg, user=user, gender=gender_results['name'])
+    return render_template('complete_profile.html', \
+                           msg=msg, user=user, gender=gender_results['name'])
 
 
 # ------------------------------------------------------------------- http://localhost:5001/home --
