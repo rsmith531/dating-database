@@ -100,7 +100,8 @@ def login():
 
         # Fetch one record and return result
         account = cursor.fetchone()
-        app.logger.info('login: access_control returned USER: %s PASSWORD: %s', account['username'], account['cipher_pw'])
+        app.logger.info('login: access_control returned USER: '\
+                        '%s PASSWORD: %s', account['username'], account['cipher_pw'])
 
         # Check if an account was returned and if the password hash matches the recalculated hash
         if account:
@@ -108,8 +109,8 @@ def login():
             app.logger.info('login: account found, checking password')
 
             hash_check, salt_check = hash_sha256(password, account['salt'], 100)
-            app.logger.debug('hash_sha256: HASHED PASSWORD: %s', hash_check)
-            app.logger.debug('hash_sha256: SALT: %s', salt_check)
+            app.logger.info('hash_sha256: HASHED PASSWORD: %s', hash_check)
+            app.logger.info('hash_sha256: SALT: %s', salt_check)
 
             if hash_check == account['cipher_pw']:
 
@@ -140,6 +141,7 @@ def login():
 def logout():
     ''' logout page
     '''
+    app.logger.info('logout: user at logout page')
 
     # Remove session data, this will log the user out
     session.pop('loggedin', None)
@@ -147,6 +149,7 @@ def logout():
     session.pop('username', None)
 
     # Redirect to login page
+    app.logger.info('logout: user logged out and rerouted to login page')
     return redirect(url_for('login'))
 
 
@@ -156,12 +159,15 @@ def logout():
 def register():
     ''' registration page
     '''
+    app.logger.info('register: user at registration page')
 
     # Output message if something goes wrong...
     msg = ''
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+
+        app.logger.info('register: user submitted good registration form')
 
         # Create variables for easy access
         username = request.form['username']
@@ -172,50 +178,67 @@ def register():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM access_control WHERE username = %s', (username,))
         account = cursor.fetchone()
+        app.logger.info('register: access_control returned USER: '\
+                        '%s', account['username'])
 
         # If account exists show error and validation checks
         if account:
+
+            app.logger.info('register: account already exists')
             msg = 'Account already exists!'
 
 
         elif not re.match(r'[A-Za-z0-9]+', username):
+
+            app.logger.info('register: username contains invalid characters')
             msg = 'Username must contain only characters and numbers!'
 
         elif not username or not password:
+
+            app.logger.info('register: username or password is empty')
             msg = 'Please fill out the form!'
 
         else:
 
             # hash the password
             hashed_pw, salt = hash_sha256(password, rounds=100)
+            app.logger.info('hash_sha256: HASHED PASSWORD: %s', hashed_pw)
+            app.logger.info('hash_sha256: SALT: %s', salt)
 
             # Insert new user into access_control table
 
             # First insert a new empty user into the user table to get a user_ID
             cursor.execute('INSERT INTO user VALUES \
                            (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)')
+            app.logger.info('register: new user inserted into user table')
 
             # Get the auto generated user_ID from the user table
             cursor.execute('SELECT * FROM user WHERE user_id = LAST_INSERT_ID()')
             new_user = cursor.fetchone()
+            app.logger.info('register: user returned USER: '\
+                            '%s', new_user['username'])
 
             # Insert the new user into the access_control table using the generated user_ID
             cursor.execute('INSERT INTO access_control VALUES (%s, %s, %s, %s, %s)',
                            (new_user['user_ID'], username, password, hashed_pw, salt))
+            app.logger.info('register: new user inserted into access_control table')
             mysql.connection.commit()
+            app.logger.info('register: new user information committed')
 
             # Create session data to replicate login process
             session['loggedin'] = True
             session['id'] = new_user['user_ID']
             session['username'] = username
-
-            msg = 'You have successfully registered!'
+            app.logger.info('register: session information created')
 
             redirect(url_for('complete_profile'))
+            msg = 'You have successfully registered!'
+
 
     elif request.method == 'POST':
 
         # Form is empty... (no POST data)
+        app.logger.info('register: user submitted empty form')
         msg = 'Please fill out the form!'
 
     # Show registration form with message (if any)
@@ -228,6 +251,7 @@ def register():
 def complete_profile():
     ''' finish up profile details here
     '''
+    app.logger.info('complete_profile: user at complete profile page')
 
     # Output message if something goes wrong...
     msg = ''
@@ -240,6 +264,8 @@ def complete_profile():
                                 and 'birthday' in request.form \
                                 and 'bio' in request.form \
                                 and 'gender' in request.form:
+
+        app.logger.info('complete_profile: user submitted good complete profile form')
 
         # Create variables for easy access
         first_name = request.form['firstName']
@@ -257,10 +283,17 @@ def complete_profile():
         # Check if the gender is new for the table
         cursor.execute ('SELECT * FROM gender WHERE name = %s;', (gender,))
         gender_fetch = cursor.fetchone()
+
         if not gender_fetch:
+
+            app.logger.info('complete_profile: gender returned no results')
             cursor.execute('INSERT INTO gender VALUES (NULL, %s)', (gender,))
             cursor.execute ('SELECT * FROM gender WHERE name = %s;', (gender,))
             gender_fetch = cursor.fetchone()
+
+        else:
+            app.logger.info('complete_profile: gender returned %s', gender_fetch)
+
 
         # Insert the new user into the access_control table using the generated user_ID
         cursor.execute('UPDATE user SET first_name = %s,\
@@ -272,12 +305,15 @@ def complete_profile():
                                         gender = %s\
                                         WHERE user_id = session[id];',
                     (first_name, last_name, city, state, birthday, bio, gender_fetch['gender_ID']))
+        app.logger.info('complete_profile: user profile updated with new information')
 
         mysql.connection.commit()
+        app.logger.info('complete_profile: user profile information committed')
 
     elif request.method == 'POST':
 
         # Form is empty... (no POST data)
+        app.logger.info('complete_profile: user submitted empty form')
         msg = 'Please fill out the form!'
 
     # Show new profile form with message (if any)
@@ -290,23 +326,31 @@ def complete_profile():
 def home():
     ''' home page
     '''
+    app.logger.info('home: user at home page')
 
     # Check if user is loggedin
     if 'loggedin' in session:
+
+        app.logger.info('home: user is logged in')
 
         # Check if user profile is complete
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
         user = cursor.fetchone()
+        app.logger.info('home: user returned %s', user)
 
         # redirect to complete profile if profile is not complete
-        if user['first_name'] == 0:
+        if user['first_name'] == 'NULL':
+
+            app.logger.info('home: user profile is not complete, redirecting to complete profile')
             return redirect(url_for('complete_profile'))
 
         # User is loggedin show them the home page
+        app.logger.info('home: user profile is complete, showing home page')
         return render_template('home.html', username=session['username'])
 
     # User is not loggedin redirect to login page
+    app.logger.info('home: user is not logged in, redirecting to login page')
     return redirect(url_for('login'))
 
 
@@ -316,6 +360,7 @@ def home():
 def profile():
     ''' profile page
     '''
+    app.logger.info('profile: user at profile page')
 
     # Check if user is loggedin
     if 'loggedin' in session:
@@ -324,11 +369,13 @@ def profile():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM access_control WHERE user_id = %s', (session['id'],))
         account = cursor.fetchone()
+        app.logger.info('profile: access_control returned %s', account)
 
         # Show the profile page with account info
         return render_template('profile.html', account=account)
 
     # User is not loggedin redirect to login page
+    app.logger.info('profile: user is not logged in, redirecting to login page')
     return redirect(url_for('login'))
 
 
