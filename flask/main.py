@@ -179,8 +179,6 @@ def register():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM access_control WHERE username = %s', (username,))
         account = cursor.fetchone()
-        app.logger.info('register: access_control returned USER: '\
-                        '%s', account['username'])
 
         # If account exists show error and validation checks
         if account:
@@ -201,6 +199,8 @@ def register():
 
         else:
 
+            app.logger.info('register: account does not exist, creating new account')
+            
             # hash the password
             hashed_pw, salt = hash_sha256(password, rounds=100)
             app.logger.info('hash_sha256: HASHED PASSWORD: %s', hashed_pw)
