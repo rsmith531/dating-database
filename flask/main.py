@@ -465,7 +465,7 @@ def change_password():
         app.logger.info('change_password: password updated in database')
         msg = 'Password changed successfully!'
 
-        return render_template('change_password.html', msg=msg)
+    return render_template('change_password.html', msg=msg)
 
 
 # --------------------------------------------------------- http://localhost:5001/delete_account --
