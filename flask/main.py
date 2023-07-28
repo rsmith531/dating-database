@@ -306,7 +306,7 @@ def complete_profile():
                                         'gender_ID = %s '\
                                         'WHERE user_ID = %s'
         params = (first_name, last_name, city, state, birthday, bio,
-                  gender_fetch['gender_ID'], session[id])
+                  gender_fetch['gender_ID'], session['id'])
         app.logger.info('complete_profile: query: %s', (query, params))
         cursor.execute(query, params)
         app.logger.info('complete_profile: user profile updated with new information')
