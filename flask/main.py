@@ -14,30 +14,13 @@
 '''
 
 import re
-from logging.config import dictConfig
+#from logging.config import dictConfig
 from datetime import date
+from socket import gethostname
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from static.passwordhash import hash_sha256 # custom hashing functions for passwords
 from flask import Flask, render_template, request, redirect, url_for, session
-
-# Configure application logging
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': {'wsgi': {
-        'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
-        'formatter': 'default'
-    }},
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi']
-    }
-})
 
 app = Flask(__name__)
 
@@ -46,7 +29,7 @@ app.secret_key = 'dating database'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'rsmit216'     # TODO reconfigure these values to match your credentials
+app.config['MYSQL_USER'] = 'rsmit216'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'rsmit216'
 
@@ -101,13 +84,12 @@ def login():
 
         # Fetch one record and return result
         account = cursor.fetchone()
-        app.logger.info('login: access_control returned USER: '\
-                        '%s PASSWORD: %s', account['username'], account['cipher_pw'])
 
         # Check if an account was returned and if the password hash matches the recalculated hash
         if account:
 
-            app.logger.info('login: account found, checking password')
+            app.logger.info('login: access_control returned USER: '\
+                        '%s PASSWORD: %s', account['username'], account['cipher_pw'])
 
             hash_check, salt_check = hash_sha256(password, account['salt'], 100)
             app.logger.info('hash_sha256: HASHED PASSWORD: %s', hash_check)
@@ -327,15 +309,22 @@ def complete_profile():
     user = cursor.fetchone()
     app.logger.info('complete_profile: user returned %s', user)
 
-    # Get the user's gender from gender_ID
-    cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (user['gender_ID'],))
-    gender_results = cursor.fetchone()
-    app.logger.info('complete_profile: gender returned %s', gender_results)
+    if user['gender_ID'] is not None:
 
+        # Get the user's gender from gender_ID
+        cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (user['gender_ID'],))
+        gender_results = cursor.fetchone()
+        app.logger.info('complete_profile: gender returned %s', gender_results)
+
+        # Show new profile form with message (if any)
+        return render_template('complete_profile.html', \
+                           msg=msg, user=user, gender=gender_results['name'])
+
+    user = None
 
     # Show new profile form with message (if any)
     return render_template('complete_profile.html', \
-                           msg=msg, user=user, gender=gender_results['name'])
+                           msg=msg, user=user)
 
 
 # ------------------------------------------------------------------- http://localhost:5001/home --
@@ -548,4 +537,5 @@ def newpage():
 # ----------------------------------------------------------------------------------------- main --
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5001)
+    if 'liveconsole' not in gethostname():
+        app.run(host='localhost', port=5001)
