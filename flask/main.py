@@ -14,7 +14,6 @@
 '''
 
 import re
-#from logging.config import dictConfig
 from datetime import date
 from socket import gethostname
 from flask_mysqldb import MySQL
