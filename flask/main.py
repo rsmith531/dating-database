@@ -538,4 +538,4 @@ def newpage():
 
 if __name__ == '__main__':
     if 'liveconsole' not in gethostname():
-        app.run(host='localhost', port=5001)
+        app.run(host='localhost', port=5001, debug=True)
