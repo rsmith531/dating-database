@@ -1,27 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Matches</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-</head>
-<body>
-    <div class="matches">
-        <h1>Your Matches</h1>
-        <div class="links">
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('complete_profile') }}">Complete Profile</a>
-            <a href="{{ url_for('matches') }}" class="active">Matches</a>
-            <a href="{{ url_for('logout') }}">Logout</a>
-        </div>
+{% extends 'layout.html' %}
+
+{% block title %}Matches{% endblock %}
+
+{% block content %}
+<h2>Your Matches</h2>
+<div>
+    <p>Here are the profiles of users that liked you and you liked back:</p>
+    <div class="grid-container">
         {% for match in matches %}
-        <div class="match">
-            <h2>{{ match.first_name }} {{ match.last_name }}</h2>
-            <p>Age: {{ match.age }}</p>
-            <p>Location: {{ match.city }}, {{ match.state }}</p>
-        </div>
+        <div class="profile-card">
+            <h3>{{ match['first_name'] }} {{ match['last_name'] }}</h3>
+            <table>
+                <tr>
+                    <td>Age:</td>
+                    <td>{{ match['age'] }} years old</td>
+                </tr>
+                <tr>
+                    <td>Location:</td>
+                    <td>{{ match['city'] }}, {{ match['state'] }}</td>
+                </tr>
+            </table>
+             </div>
         {% endfor %}
     </div>
-</body>
-</html>
+</div>
+<div>
+    <a href="{{ url_for('profile') }}">Back to Profile</a>
+</div>
+{% endblock %}
