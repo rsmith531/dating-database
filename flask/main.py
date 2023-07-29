@@ -522,6 +522,49 @@ def delete_account():
 ## ADD NEW PAGES HERE ##
 ########################
 
+# ---------------------------------------------------------------- http://localhost:5001/matches --
+
+@app.route('/matches')
+def matches():
+    ''' show matches for the logged-in user
+    '''
+    app.logger.info('matches: user at matches page')
+
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # User is loggedin show them the matches page
+
+        # create cursor to interact with MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        # Query to get the matches 
+        cursor.execute("""
+            SELECT 
+            U.user_ID, U.first_name, U.last_name, 
+            TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
+            U.city, U.state 
+            FROM 
+            user_interaction I1 
+            INNER JOIN 
+            user_interaction I2 
+            ON I1.user_ID_1 = I2.user_ID_2 AND I1.user_ID_2 = I2.user_ID_1 
+            INNER JOIN 
+            user U 
+            ON U.user_ID = I1.user_ID_2 
+            WHERE 
+            I1.user_ID_1 = %s AND I1.status = 'like' AND I2.status = 'like'
+        """, (session['id'],))
+
+
+        # Fetch all records and return result
+        matches = cursor.fetchall()
+
+        return render_template('matches.html', matches=matches)
+
+    # User is not loggedin redirect to login page
+    app.logger.info('matches: user rerouted to login page')
+    return redirect(url_for('login'))
+
 
 # ---------------------------------------------------------------- http://localhost:5001/newpage --
 
