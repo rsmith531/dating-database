@@ -20,6 +20,9 @@
                     <td>{{ match['city'] }}, {{ match['state'] }}</td>
                 </tr>
             </table>
+              <form method="post" action="{{ url_for('unmatch', user_id=match['user_ID']) }}">
+                <button type="submit">Unmatch</button>
+            </form>
              </div>
         {% endfor %}
     </div>
