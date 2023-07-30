@@ -522,6 +522,54 @@ def delete_account():
 ## ADD NEW PAGES HERE ##
 ########################
 
+# ---------------------------------------------------------------- http://localhost:5001/browse --
+
+@app.route('/browse', methods=['GET', 'POST'])
+def browse():
+    ''' browse potential matches for the logged-in user
+    '''
+    app.logger.info('browse: user at browse page')
+
+    # Check if user is logged in
+    if 'loggedin' in session:
+
+        # create cursor to interact with DB
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        if request.method == 'POST':
+            # updates status
+            cursor.execute("""
+                INSERT INTO user_interaction 
+                (user_ID_1, user_ID_2, status) VALUES (%s, %s, %s)
+            """, (session['id'], request.form['user_id'], request.form['status']))
+            mysql.connection.commit()
+
+        # Query to get users that have not been interacted with
+        cursor.execute("""
+            SELECT user_ID, first_name, last_name, TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age, city, state
+            FROM user
+            WHERE user_ID NOT IN (
+                SELECT user_ID_2 FROM user_interaction WHERE user_ID_1 = %s
+            ) AND user_ID NOT IN (
+                SELECT user_ID_1 FROM user_interaction WHERE user_ID_2 = %s AND status = 'block'
+            )
+            LIMIT 1
+        """, (session['id'], session['id'],))
+
+        # Fetch one record and return result
+        user = cursor.fetchone()
+
+        if user:
+            return render_template('browse.html', user=user)
+        else:
+            return render_template('browse.html')
+
+    # User is not loggedin redirect to login page
+    app.logger.info('browse: user rerouted to login page')
+    return redirect(url_for('login'))
+
+
+
 # ---------------------------------------------------------------- http://localhost:5001/matches --
 
 @app.route('/matches')
@@ -565,6 +613,37 @@ def matches():
     app.logger.info('matches: user rerouted to login page')
     return redirect(url_for('login'))
 
+
+# ---------------------------------------------------------------- http://localhost:5001/unmatch
+@app.route('/unmatch/<int:user_id>', methods=['POST'])
+def unmatch(user_id):
+    ''' unmatch a user
+    '''
+    app.logger.info('unmatch: user attempting to unmatch')
+
+    # Check if user is loggedin
+    if 'loggedin' in session:
+        # User is loggedin perform the unmatch
+
+        # create cursor to interact with MySQL
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        # Query to update the user_interaction status 
+        cursor.execute("""
+            UPDATE user_interaction
+            SET status = 'dislike'
+            WHERE (user_ID_1 = %s AND user_ID_2 = %s) OR (user_ID_1 = %s AND user_ID_2 = %s)
+        """, (session['id'], user_id, user_id, session['id'],))
+
+        # Commit the transaction
+        mysql.connection.commit()
+
+        app.logger.info('unmatch: user successfully unmatched')
+        return redirect(url_for('matches'))
+
+    # User is not loggedin redirect to login page
+    app.logger.info('unmatch: user rerouted to login page')
+    return redirect(url_for('login'))
 
 # ---------------------------------------------------------------- http://localhost:5001/newpage --
 
