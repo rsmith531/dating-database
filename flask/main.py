@@ -518,11 +518,7 @@ def delete_account():
     return render_template('delete_account.html', msg=msg)
 
 
-########################
-## ADD NEW PAGES HERE ##
-########################
-
-# ---------------------------------------------------------------- http://localhost:5001/browse --
+# ----------------------------------------------------------------- http://localhost:5001/browse --
 
 @app.route('/browse', methods=['GET', 'POST'])
 def browse():
@@ -569,7 +565,6 @@ def browse():
     return redirect(url_for('login'))
 
 
-
 # ---------------------------------------------------------------- http://localhost:5001/matches --
 
 @app.route('/matches')
@@ -614,7 +609,8 @@ def matches():
     return redirect(url_for('login'))
 
 
-# ---------------------------------------------------------------- http://localhost:5001/unmatch
+# ---------------------------------------------------------------- http://localhost:5001/unmatch --
+
 @app.route('/unmatch/<int:user_id>', methods=['POST'])
 def unmatch(user_id):
     ''' unmatch a user
@@ -644,6 +640,11 @@ def unmatch(user_id):
     # User is not loggedin redirect to login page
     app.logger.info('unmatch: user rerouted to login page')
     return redirect(url_for('login'))
+
+
+########################
+## ADD NEW PAGES HERE ##
+########################
 
 # ---------------------------------------------------------------- http://localhost:5001/newpage --
 
