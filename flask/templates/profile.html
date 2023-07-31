@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h2>Profile Page</h2>
+<div>
+    <p>Your profile:</p>
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>{{ profile['first_name'] }} {{ profile['last_name'] }}</td>
+        </tr>
+        <tr>
+            <td>Gender:</td>
+            <td>{{ gender }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>{{ age }} years old</td>
+        </tr>
+            <td>Birthday:</td>
+            <td>{{ profile['birthday'] }}</td>
+        </tr>
+        <tr>
+            <td>Location:</td>
+            <td>{{ profile['city'] }}, {{ profile['state'] }}</td>
+        </tr>
+        <tr>
+            <td>Bio:</td>
+            <td>{{ profile['bio'] }}</td>
+        </tr>
+    </table>
+</div>
+<div>
+    <a href="{{ url_for('complete_profile') }}">Edit Profile</a>
+</div>
+<div>
+    <p>Your account details:</p>
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td>{{ account['username'] }}</td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td>{{ account['cipher_pw'] }}</td>
+        </tr>
+    </table>
+</div>
+<div>
+    <a href="{{ url_for('change_password') }}">Change Password</a>
+</div>
+<div>
+    <a href="{{ url_for('delete_account') }}">Delete Account</a>
+</div>
+    "
+{% endblock %}

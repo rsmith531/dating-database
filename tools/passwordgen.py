@@ -1,7 +1,6 @@
 import string
 import random
 import hashlib
-from cryptography.fernet import Fernet
 
 def to_bytes(s):
     return s.encode("utf-8")
@@ -39,4 +38,3 @@ for i in range(0, i):
     print(f'\ncleartext password: {pass1}')
     print(f'ciphertext password: {hash_sha256(pass1 + salt, 100)}')
     print(f'salt: {salt}')
-    print(f'key: {to_string(Fernet.generate_key())}')

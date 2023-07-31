@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Delete Account</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+	</head>
+	<body>
+		<div class="register">
+			<h1>Delete Account</h1>
+			<div class="links">
+				<a href="{{ url_for('home') }}">Home</a>
+				<a href="{{ url_for('profile') }}">Profile</a>
+				<a href="{{ url_for('delete_account') }}" class="active">Delete Account</a>
+				<a href="{{ url_for('logout') }}">Log Out</a>
+			</div>
+				<div>
+					<p>Are you sure? Maybe you meant to <a href="{{ url_for('logout') }}">log out</a></p>
+				</div>
+			<form action="{{ url_for('delete_account') }}" method="post" autocomplete="off">
+					<label for="password">
+						<i class="fas fa-lock"></i>
+					</label>
+					<input type="password" name="password" placeholder="Enter Password" id="password" required>
+				<div class="msg">{{ msg }}</div>
+				<input type="submit" value="Nah, I'm sure. Get me out of here">
+			</form>
+		</div>
+	</body>
+</html>
