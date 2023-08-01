@@ -2,6 +2,7 @@
 
 -- DROP OLD DATA
 
+DELETE FROM state;
 DELETE FROM access_control;
 DELETE FROM status;
 DELETE FROM gender;
@@ -41,6 +42,13 @@ INSERT INTO hobbies VALUES('hiking');
 INSERT INTO hobbies VALUES('snowboarding');
 INSERT INTO hobbies VALUES('canoeing');
 INSERT INTO hobbies VALUES('golfing');
+
+-- STATE TABLE INSERTS
+
+INSERT INTO `state` (state) VALUES
+  ('AL'), ('AK'), ('AZ'), ('AR'), ('CA'), ('CO'), ('CT'), ('DE'), ('FL'), ('GA'), ('HI'), ('ID'), ('IL'), ('IN'), ('IA'), ('KS'), ('KY'), ('LA'), ('ME'), ('MD'),
+	('MA'), ('MI'), ('MN'), ('MS'), ('MO'), ('MT'), ('NE'), ('NV'), ('NH'), ('NJ'), ('NM'), ('NY'), ('NC'), ('ND'), ('OH'), ('OK'), ('OR'), ('PA'), ('RI'), ('SC'),
+	('SD'), ('TN'), ('TX'), ('UT'), ('VT'), ('VA'), ('WA'), ('WV'), ('WI'), ('WY');
 
 -- USER TABLE INSERTS
 
