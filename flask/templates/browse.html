@@ -1,3 +1,4 @@
+
 {% extends 'layout.html' %}
 
 {% block title %}Browse{% endblock %}
@@ -6,8 +7,22 @@
 <h2>Browse Profiles</h2>
 <div>
     <p>Here's a profile of a user you haven't interacted with yet:</p>
-    {% if user %}
+
+
+
+
+
+  {% if user %}
     <div class="profile-card">
+
+  {% if user['file_locale'] %}
+        <div class="profile-photo">
+            <img src="{{ url_for('static', filename='profile_photos/' + user['file_locale']) }}" alt="{{ user['first_name'] }}'s Profile Photo" style="width: 300px; h$
+        </div>
+	{% endif %}
+
+
+
         <h3>{{ user['first_name'] }} {{ user['last_name'] }}</h3>
         <table>
             <tr>
@@ -34,3 +49,5 @@
     <a href="{{ url_for('profile') }}">Back to Profile</a>
 </div>
 {% endblock %}
+
+
