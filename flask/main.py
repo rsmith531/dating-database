@@ -535,22 +535,24 @@ def delete_account():
     return render_template('delete_account.html', msg=msg)
 
 
-# ----------------------------------------------------------------- http://localhost:5001/browse --
 
+
+
+# ----------------------------------------------------------------- http://localhost:5001/browse --
 @app.route('/browse', methods=['GET', 'POST'])
 def browse():
     ''' browse potential matches for the logged-in user
     '''
     app.logger.info('browse: user at browse page')
 
-    # Check if user is logged in
+    # Check if user is loggedin
     if 'loggedin' in session:
 
-        # create cursor to interact with DB
+        # create cursor to interact with MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
         if request.method == 'POST':
-            # updates status
+            # update the status
             cursor.execute("""
                 INSERT INTO user_interaction 
                 (user_ID_1, user_ID_2, status) VALUES (%s, %s, %s)
@@ -559,11 +561,14 @@ def browse():
 
         # Query to get users that have not been interacted with
         cursor.execute("""
-            SELECT user_ID, first_name, last_name, TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age, city, state
-            FROM user
-            WHERE user_ID NOT IN (
+            SELECT U.user_ID, U.first_name, U.last_name, 
+                   TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
+                   U.city, U.state, P.file_locale
+            FROM user U
+            LEFT JOIN user_photo P ON U.user_ID = P.user_ID AND P.photo_pos = 1
+            WHERE U.user_ID NOT IN (
                 SELECT user_ID_2 FROM user_interaction WHERE user_ID_1 = %s
-            ) AND user_ID NOT IN (
+                ) AND U.user_ID NOT IN (
                 SELECT user_ID_1 FROM user_interaction WHERE user_ID_2 = %s AND status = 'block'
             )
             LIMIT 1
@@ -581,9 +586,7 @@ def browse():
     app.logger.info('browse: user rerouted to login page')
     return redirect(url_for('login'))
 
-
 # ---------------------------------------------------------------- http://localhost:5001/matches --
-
 @app.route('/matches')
 def matches():
     ''' show matches for the logged-in user
@@ -602,7 +605,7 @@ def matches():
             SELECT 
             U.user_ID, U.first_name, U.last_name, 
             TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
-            U.city, U.state 
+            U.city, U.state, P.file_locale
             FROM 
             user_interaction I1 
             INNER JOIN 
@@ -611,10 +614,12 @@ def matches():
             INNER JOIN 
             user U 
             ON U.user_ID = I1.user_ID_2 
+            LEFT JOIN 
+            user_photo P
+            ON U.user_ID = P.user_ID AND P.photo_pos = 1
             WHERE 
             I1.user_ID_1 = %s AND I1.status = 'like' AND I2.status = 'like'
         """, (session['id'],))
-
 
         # Fetch all records and return result
         matches = cursor.fetchall()
@@ -624,6 +629,7 @@ def matches():
     # User is not loggedin redirect to login page
     app.logger.info('matches: user rerouted to login page')
     return redirect(url_for('login'))
+
 
 
 # ---------------------------------------------------------------- http://localhost:5001/unmatch --
@@ -678,3 +684,4 @@ def newpage():
 if __name__ == '__main__':
     if 'liveconsole' not in gethostname():
         app.run(host='localhost', port=5001, debug=True)
+
