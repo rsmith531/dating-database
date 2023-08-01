@@ -1,3 +1,4 @@
+
 {% extends 'layout.html' %}
 
 {% block title %}Matches{% endblock %}
@@ -9,6 +10,13 @@
     <div class="grid-container">
         {% for match in matches %}
         <div class="profile-card">
+
+        {% if match['file_locale'] %}
+            <div class="profile-photo">
+                <img src="{{ url_for('static', filename='profile_photos/' + match['file_locale']) }}" alt="{{ match['first_name'] }}'s Profile Photo" style="width: 30$
+            </div>
+        {% endif %}
+
             <h3>{{ match['first_name'] }} {{ match['last_name'] }}</h3>
             <table>
                 <tr>
@@ -20,14 +28,16 @@
                     <td>{{ match['city'] }}, {{ match['state'] }}</td>
                 </tr>
             </table>
-              <form method="post" action="{{ url_for('unmatch', user_id=match['user_ID']) }}">
+            <form method="post" action="{{ url_for('unmatch', user_id=match['user_ID']) }}">
                 <button type="submit">Unmatch</button>
             </form>
-             </div>
-        {% endfor %}
+        </div>
+	{% endfor %}
     </div>
 </div>
 <div>
     <a href="{{ url_for('profile') }}">Back to Profile</a>
 </div>
 {% endblock %}
+
+
