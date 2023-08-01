@@ -14,7 +14,7 @@
 '''
 
 import re
-from datetime import date, strptime
+from datetime import date, datetime
 from socket import gethostname
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
@@ -278,7 +278,7 @@ def complete_profile():
 
         # Calculate the user's age from their birthday
         days_in_year = 365.2425
-        age_calc = int((date.today() - strptime(birthday, '%y-%m-%d').days) / days_in_year)
+        age_calc = int((date.today() - datetime.strptime(birthday, '%y-%m-%d').days) / days_in_year)
 
         # cursor to update user with profile information
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -292,10 +292,6 @@ def complete_profile():
             mysql.connection.commit()
             app.logger.info('complete_profile: user deleted from database')
             return redirect(url_for('logout'))
-            
-
-
-
 
         # Insert the new user into the access_control table using the generated user_ID
         query = 'UPDATE user SET first_name = %s, '\
