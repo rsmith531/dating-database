@@ -13,6 +13,7 @@ SET time_zone = "+00:00";
 --
 
 DROP TABLE IF EXISTS `status`;
+DROP TABLE IF EXISTS `state`;
 DROP TABLE IF EXISTS `age_interests`;
 DROP TABLE IF EXISTS `gender_interests`;
 DROP TABLE IF EXISTS `hobby_interests`;
@@ -75,6 +76,16 @@ CREATE TABLE `hobbies` (
 CREATE TABLE `hobby_interests` (
   `user_ID` int(5) NOT NULL,
   `hobby_name` varchar(99) NOT NULL
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `state`
+--
+
+CREATE TABLE `state` (
+  `state` varchar(2) NOT NULL
 );
 
 -- --------------------------------------------------------
@@ -183,6 +194,12 @@ ALTER TABLE `hobbies`
   ADD PRIMARY KEY (`hobby_name`);
 
 --
+-- Indexes for table `state`
+--
+ALTER TABLE `state`
+  ADD PRIMARY KEY (`state`);
+
+--
 -- Indexes for table `hobby_interests`
 --
 ALTER TABLE `hobby_interests`
@@ -252,7 +269,8 @@ ALTER TABLE `hobby_interests`
 -- Constraints for table `user`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`gender_ID`) REFERENCES `gender` (`gender_ID`);
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`gender_ID`) REFERENCES `gender` (`gender_ID`),
+  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`state`) REFERENCES `state` (`state`);
 
 --
 -- Constraints for table `user_email`
@@ -291,6 +309,7 @@ ALTER TABLE `age_interests`
 
 -- DROP OLD DATA
 
+DELETE FROM state;
 DELETE FROM access_control;
 DELETE FROM status;
 DELETE FROM gender;
@@ -317,19 +336,17 @@ INSERT INTO status VALUES('block');
 
 -- HOBBY TABLE INSERTS
 
-INSERT INTO hobbies VALUES('surfing');
-INSERT INTO hobbies VALUES('woodworking');
-INSERT INTO hobbies VALUES('painting');
-INSERT INTO hobbies VALUES('writing');
-INSERT INTO hobbies VALUES('soccer');
-INSERT INTO hobbies VALUES('pottery');
-INSERT INTO hobbies VALUES('archery');
-INSERT INTO hobbies VALUES('horseback riding');
-INSERT INTO hobbies VALUES('pickleball');
-INSERT INTO hobbies VALUES('hiking');
-INSERT INTO hobbies VALUES('snowboarding');
-INSERT INTO hobbies VALUES('canoeing');
-INSERT INTO hobbies VALUES('golfing');
+INSERT INTO hobbies VALUES
+('surfing'),('woodworking'),('painting'),('writing'),('soccer'),('pottery'),('archery'),('horseback riding'),('pickleball'),('hiking'),('snowboarding'),('canoeing'),
+('golfing'),('reading'),('traveling'),('cooking'),('watching movies'),('playing video games'),('dancing'),('photography'),('cycling'),('running'),('yoga'),
+('playing musical instruments'),('swimming'),('playing board games'),('gardening'),('volunteering'),('fishing'),('camping'),('birdwatching'),('DIY');
+
+-- STATE TABLE INSERTS
+
+INSERT INTO `state` (state) VALUES
+  ('AL'), ('AK'), ('AZ'), ('AR'), ('CA'), ('CO'), ('CT'), ('DE'), ('FL'), ('GA'), ('HI'), ('ID'), ('IL'), ('IN'), ('IA'), ('KS'), ('KY'), ('LA'), ('ME'), ('MD'),
+	('MA'), ('MI'), ('MN'), ('MS'), ('MO'), ('MT'), ('NE'), ('NV'), ('NH'), ('NJ'), ('NM'), ('NY'), ('NC'), ('ND'), ('OH'), ('OK'), ('OR'), ('PA'), ('RI'), ('SC'),
+	('SD'), ('TN'), ('TX'), ('UT'), ('VT'), ('VA'), ('WA'), ('WV'), ('WI'), ('WY');
 
 -- USER TABLE INSERTS
 

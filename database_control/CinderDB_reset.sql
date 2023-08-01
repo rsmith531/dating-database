@@ -13,6 +13,7 @@ SET time_zone = "+00:00";
 --
 
 DROP TABLE IF EXISTS `status`;
+DROP TABLE IF EXISTS `state`;
 DROP TABLE IF EXISTS `age_interests`;
 DROP TABLE IF EXISTS `gender_interests`;
 DROP TABLE IF EXISTS `hobby_interests`;
@@ -75,6 +76,16 @@ CREATE TABLE `hobbies` (
 CREATE TABLE `hobby_interests` (
   `user_ID` int(5) NOT NULL,
   `hobby_name` varchar(99) NOT NULL
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `state`
+--
+
+CREATE TABLE `state` (
+  `state` varchar(2) NOT NULL
 );
 
 -- --------------------------------------------------------
@@ -183,6 +194,12 @@ ALTER TABLE `hobbies`
   ADD PRIMARY KEY (`hobby_name`);
 
 --
+-- Indexes for table `state`
+--
+ALTER TABLE `state`
+  ADD PRIMARY KEY (`state`);
+
+--
 -- Indexes for table `hobby_interests`
 --
 ALTER TABLE `hobby_interests`
@@ -252,7 +269,8 @@ ALTER TABLE `hobby_interests`
 -- Constraints for table `user`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`gender_ID`) REFERENCES `gender` (`gender_ID`);
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`gender_ID`) REFERENCES `gender` (`gender_ID`),
+  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`state`) REFERENCES `state` (`state`);
 
 --
 -- Constraints for table `user_email`
