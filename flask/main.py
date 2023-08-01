@@ -145,7 +145,8 @@ def register():
     app.logger.info('register: user at registration page')
 
     # Output message if something goes wrong...
-    msg = ''
+    msg = 'WARNING: Do not use a password you use with other accounts. '\
+          'The security of this site is not guaranteed.'
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
