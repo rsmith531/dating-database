@@ -16,7 +16,7 @@
             <td>{{ gender }}</td>
         </tr>
         <tr>
-            <td></td>
+            <td>Age:</td>
             <td>{{ age }} years old</td>
         </tr>
             <td>Birthday:</td>
@@ -29,6 +29,18 @@
         <tr>
             <td>Bio:</td>
             <td>{{ profile['bio'] }}</td>
+        </tr>
+        <tr>
+            <td>Hobbies:</td>
+            <td>
+                {% if hobbies %}
+                    {% for hobby in hobbies %}
+                        {{ hobby['hobby_name'] }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    (None selected)
+                {% endif %}
+            </td>
         </tr>
     </table>
    
@@ -58,5 +70,5 @@
 <div>
     <a href="{{ url_for('delete_account') }}">Delete Account</a>
 </div>
-    "
+
 {% endblock %}
