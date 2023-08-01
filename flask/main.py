@@ -239,12 +239,19 @@ def complete_profile():
     # Output message if something goes wrong...
     msg = ''
     
-    # get states and genders to populate dropdowns
+    # get states and genders to populate dropdowns, hobbies to populate checkboxes
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM state')
     states = cursor.fetchall()
     cursor.execute('SELECT * FROM gender')
     genders = cursor.fetchall()
+    cursor.execute('SELECT * FROM hobbies')
+    hobbies = cursor.fetchall()
+    app.logger.info('all hobbies: %s', hobbies)
+    cursor.execute('SELECT * FROM hobby_interests WHERE user_ID = %s;', (session['id'],))
+    user_hobbies = cursor.fetchall()
+    app.logger.info('user hobbies: %s', user_hobbies)
+    
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'firstName' in request.form \
@@ -265,6 +272,9 @@ def complete_profile():
         birthday = request.form['birthday']                    # TODO make this a calendar selector
         bio = request.form['bio']
         gender = request.form['gender']
+        user_hobbies = request.form.getlist('hobbies')
+
+        app.logger.info('UPDATED HOBBIES: %s', user_hobbies)
 
 
         # query to update user with profile information
@@ -283,8 +293,20 @@ def complete_profile():
         params = (first_name, last_name, city, state, birthday, bio,
                   gender, session['id'])
         app.logger.info('complete_profile: query: %s', (query, params))
+
+
         cursor.execute(query, params)
         app.logger.info('complete_profile: user profile updated with new information')
+
+
+        # Delete and re-add all existing user hobbies
+        cursor.execute('DELETE FROM hobby_interests WHERE user_ID = %s;', (session['id'],))
+
+        for h in user_hobbies:
+            query = 'INSERT INTO hobby_interests (user_ID, hobby_name) VALUES (%s, %s)'
+            params = (session['id'], h)
+            cursor.execute(query, params)
+
 
         mysql.connection.commit()
         app.logger.info('complete_profile: user profile information committed')
@@ -307,13 +329,14 @@ def complete_profile():
         # Get the user's gender from gender_ID
         app.logger.info('complete_profile.')
         # Show new profile form with message (if any)
-        return render_template('complete_profile.html', msg=msg, user=user, states=states, genders=genders)
+        return render_template('complete_profile.html', \
+                                msg=msg, user=user, states=states, genders=genders, hobbies=hobbies, user_hobbies=user_hobbies)
 
     user = None
 
     # Show new profile form with message (if any)
     return render_template('complete_profile.html', \
-                           msg=msg, user=user, states=states, genders=genders)
+                           msg=msg, user=user, states=states, genders=genders, hobbies=hobbies, user_hobbies=user_hobbies)
 
 
 # ------------------------------------------------------------------- http://localhost:5001/home --
@@ -382,10 +405,14 @@ def profile():
         cursor.execute('SELECT * FROM gender WHERE gender_ID = %s', (profile_results['gender_ID'],))
         gender_results = cursor.fetchone()
 
+        # Get all user's hobbies
+        cursor.execute('SELECT hobby_name FROM hobby_interests WHERE hobby_interests.user_ID = %s', (session['id'],))
+        hobbies_results = cursor.fetchall()
+        app.logger.info('profile: user hobbies returned %s', hobbies_results)
 
         # Show the profile page with account info
         return render_template('profile.html', account=account, profile=profile_results, \
-                               age=age_calc, gender=gender_results['name'])
+                               age=age_calc, gender=gender_results['name'], hobbies=hobbies_results)
 
     # User is not loggedin redirect to login page
     app.logger.info('profile: user is not logged in, redirecting to login page')
