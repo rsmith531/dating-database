@@ -269,16 +269,32 @@ def complete_profile():
         last_name = request.form['lastName']
         city = request.form['city']
         state = request.form['state']
-        birthday = request.form['birthday']                    # TODO make this a calendar selector
+        birthday = request.form['birthday']
         bio = request.form['bio']
         gender = request.form['gender']
         user_hobbies = request.form.getlist('hobbies')
 
         app.logger.info('UPDATED HOBBIES: %s', user_hobbies)
 
+        # Calculate the user's age from their birthday
+        days_in_year = 365.2425
+        age_calc = int((date.today() - profile_results['birthday']).days / days_in_year)
 
-        # query to update user with profile information
+        # cursor to update user with profile information
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                                    
+        if age_calc < 18:
+            app.logger.info('complete_profile: underage user detected')
+
+            # Delete the user from the database
+            cursor.execute('DELETE FROM access_control WHERE user_ID = %s', (session['id'],))
+            cursor.execute('DELETE FROM user WHERE user_ID = %s', (session['id'],))
+            mysql.connection.commit()
+            app.logger.info('complete_profile: user deleted from database')
+            return redirect(url_for('logout'))
+            
+
+
 
 
         # Insert the new user into the access_control table using the generated user_ID
