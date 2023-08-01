@@ -14,7 +14,7 @@
 '''
 
 import re
-from datetime import date
+from datetime import date, strptime
 from socket import gethostname
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
@@ -28,9 +28,9 @@ app.secret_key = 'dating database'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'qajaq'
-app.config['MYSQL_DB'] = 'dating_database'
+app.config['MYSQL_USER'] = 'rsmit216'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'rsmit216'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -278,11 +278,11 @@ def complete_profile():
 
         # Calculate the user's age from their birthday
         days_in_year = 365.2425
-        age_calc = int((date.today() - profile_results['birthday']).days / days_in_year)
+        age_calc = int((date.today() - strptime(birthday, '%y-%m-%d').days) / days_in_year)
 
         # cursor to update user with profile information
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-                                    
+
         if age_calc < 18:
             app.logger.info('complete_profile: underage user detected')
 
