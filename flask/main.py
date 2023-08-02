@@ -205,6 +205,13 @@ def register():
             cursor.execute('INSERT INTO access_control VALUES (%s, %s, %s, %s, %s)',
                            (new_user['user_ID'], username, password, hashed_pw, salt))
             app.logger.info('register: new user inserted into access_control table')
+            app.logger.info('register: new user information committed')
+
+            # Block own self so the user doesn't see themselves in browse
+            cursor.execute('INSERT INTO user_interaction (user_ID_1, user_ID_2, status) \
+                           VALUES (%s, %s, %s)', (new_user['user_ID'], new_user['user_ID'], \
+                                                  'block'))
+            app.logger.info('register: user self block inserted into user_interaction table')
             mysql.connection.commit()
             app.logger.info('register: new user information committed')
 
