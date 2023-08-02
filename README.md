@@ -13,10 +13,10 @@ A group project for KSU Summer 2023 Database Design course. It uses MySQL as a D
 - Accept the host authenticity if necessary.
 - Enter Flashline password.
 
-### Clone the repo into your public_html folder
+### Clone the repo into your dbdev directory
 - `git clone https://github.com/rsmith531/dating-database.git`
 - Enter your Github account username and personal access token.
--`cd dating-database`
+- `cd dating-database`
 - If you need to check out a remote branch you are working in:
     - `git checkout --track origin/(your branch name)`
 
