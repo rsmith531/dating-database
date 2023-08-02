@@ -582,10 +582,10 @@ def browse():
     return redirect(url_for('login'))
 
 
-# ---------------------------------------------------------------- http://localhost:5001/matches1 --
+# ---------------------------------------------------------------- http://localhost:5001/matches --
 
-@app.route('/matches2')
-def matches2():
+@app.route('/matches')
+def matches():
     ''' This page allows you to view your matches
     '''
     app.logger.info('home: user at matches page')
@@ -635,7 +635,7 @@ def matches2():
 
         # User is loggedin, show the matched page
         app.logger.info('home: user profile is complete, matches page')
-        return render_template('matches2.html', username=session['username'], matches_info = matches_info)
+        return render_template('matches.html', username=session['username'], matches_info = matches_info)
     
 
     # User is not loggedin redirect to login page
