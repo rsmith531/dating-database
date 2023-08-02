@@ -14,7 +14,7 @@
 '''
 
 import re
-from datetime import date
+from datetime import date, datetime
 from socket import gethostname
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
@@ -269,7 +269,7 @@ def complete_profile():
         last_name = request.form['lastName']
         city = request.form['city']
         state = request.form['state']
-        birthday = request.form['birthday']                    # TODO make this a calendar selector
+        birthday = request.form['birthday']
         bio = request.form['bio']
         gender = request.form['gender']
         user_hobbies = request.form.getlist('hobbies')
@@ -626,12 +626,16 @@ def matches1():
                'WHERE user.user_ID = %s', (user_ID,))
             matched_user = cursor.fetchone()
             if matched_user:
+                # TODO Calculate the user's age from their birthday
+                days_in_year = 365.2425
+                age_calc = int((date.today() - datetime.strptime(matched_user['birthday'], '%Y-%m-%d').date()).days / days_in_year)
+                matched_user['age'] = age_calc
                 matches_info.append(matched_user)
         app.logger.info('matches info: %s', matches_info)
 
         # User is loggedin, show the matched page
         app.logger.info('home: user profile is complete, matches page')
-        return render_template('matches1.html', username=session['username'], matches_info = matches_info)
+        return render_template('matches2.html', username=session['username'], matches_info = matches_info)
     
 
     # User is not loggedin redirect to login page
@@ -651,10 +655,22 @@ def matches2():
     if 'loggedin' in session:
         # User is loggedin show them the matches page
 
-        # create cursor to interact with MySQL
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        app.logger.info('home: user is logged in')
 
-        # Query to get the matches 
+        # Check if user profile is complete
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
+        user = cursor.fetchone()
+        app.logger.info('home: user returned %s', user)
+
+        # redirect to complete profile if profile is not complete
+        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
+            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
+
+            app.logger.info('home: user profile is not complete, redirecting to complete profile')
+            return redirect(url_for('complete_profile'))
+
+        # Query to get the matches
         cursor.execute("""
             SELECT 
             U.user_ID, U.first_name, U.last_name, 

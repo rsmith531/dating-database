@@ -5,12 +5,17 @@
 {% block content %}
 <h2>Your Matches</h2>
 <div>
+{% if matches_info %}
     <p>Here are the profiles of users that liked you and you liked back:</p>
     <div class="grid-container">
-        {% for match in matches %}
+        {% for match in matches_info %}
         <div class="profile-card">
             <h3>{{ match['first_name'] }} {{ match['last_name'] }}</h3>
             <table>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{ match['email'] }}</td>
+                </tr>
                 <tr>
                     <td>Age:</td>
                     <td>{{ match['age'] }} years old</td>
@@ -26,8 +31,9 @@
              </div>
         {% endfor %}
     </div>
-</div>
-<div>
-    <a href="{{ url_for('profile') }}">Back to Profile</a>
+    
+    {% else %}
+        <p>No one likes you back. How sad.</p>
+    {% endif %}
 </div>
 {% endblock %}
