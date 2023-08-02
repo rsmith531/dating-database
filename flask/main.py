@@ -28,9 +28,9 @@ app.secret_key = 'dating database'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'ezavarel'
-app.config['MYSQL_PASSWORD'] = 'SY14eccb'
-app.config['MYSQL_DB'] = 'ezavarel'
+app.config['MYSQL_USER'] = 'rsmit216'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'rsmit216'
 
 # Intialize MySQL
 mysql = MySQL(app)
