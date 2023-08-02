@@ -8,6 +8,14 @@
     <p>Here's a profile of a user you haven't interacted with yet:</p>
     {% if user %}
     <div class="profile-card">
+
+
+    {% if user['file_locale'] %}
+        <div class="profile-photo">
+            <img src="{{ url_for('static', filename='profile_photos/' + user['file_locale']) }}" alt="{{ user['first_name'] }}'s Profile Photo" style="width: 300px; height: 300px;">
+        </div>
+    {% endif %}
+
         <h3>{{ user['first_name'] }} {{ user['last_name'] }}</h3>
         <table>
             <tr>

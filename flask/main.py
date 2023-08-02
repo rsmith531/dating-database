@@ -28,9 +28,9 @@ app.secret_key = 'dating database'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'rsmit216'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'rsmit216'
+app.config['MYSQL_USER'] = 'ezavarel'
+app.config['MYSQL_PASSWORD'] = 'SY14eccb'
+app.config['MYSQL_DB'] = 'ezavarel'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -564,14 +564,14 @@ def browse():
     '''
     app.logger.info('browse: user at browse page')
 
-    # Check if user is logged in
+    # Check if user is loggedin
     if 'loggedin' in session:
 
-        # create cursor to interact with DB
+        # create cursor to interact with MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
         if request.method == 'POST':
-            # updates status
+            # update the status
             cursor.execute("""
                 INSERT INTO user_interaction 
                 (user_ID_1, user_ID_2, status) VALUES (%s, %s, %s)
@@ -580,11 +580,14 @@ def browse():
 
         # Query to get users that have not been interacted with
         cursor.execute("""
-            SELECT user_ID, first_name, last_name, TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age, city, state
-            FROM user
-            WHERE user_ID NOT IN (
+            SELECT U.user_ID, U.first_name, U.last_name, 
+                   TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
+                   U.city, U.state, P.file_locale
+            FROM user U
+            LEFT JOIN user_photo P ON U.user_ID = P.user_ID AND P.photo_pos = 1
+            WHERE U.user_ID NOT IN (
                 SELECT user_ID_2 FROM user_interaction WHERE user_ID_1 = %s
-            ) AND user_ID NOT IN (
+                ) AND U.user_ID NOT IN (
                 SELECT user_ID_1 FROM user_interaction WHERE user_ID_2 = %s AND status = 'block'
             )
             LIMIT 1
@@ -715,4 +718,4 @@ def newpage():
 
 if __name__ == '__main__':
     if 'liveconsole' not in gethostname():
-        app.run(host='localhost', port=5010, debug=True)
+        app.run(host='localhost', port=5001, debug=True)
