@@ -538,9 +538,9 @@ def delete_account():
             return render_template('delete_account.html', msg=msg)
 
         # Delete the user from the database
+        cursor.execute('DELETE FROM hobby_interests WHERE user_ID = %s', (session['id'],))
         cursor.execute('DELETE FROM access_control WHERE user_ID = %s', (session['id'],))
         cursor.execute('DELETE FROM user WHERE user_ID = %s', (session['id'],))
-        # TODO I think this won't delete items from misc tables. Maybe CASCADING keyword?
         mysql.connection.commit()
         app.logger.info('delete_account: user deleted from database')
         return redirect(url_for('logout'))
