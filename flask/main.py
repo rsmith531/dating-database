@@ -28,9 +28,9 @@ app.secret_key = 'dating database'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'qajaq'
-app.config['MYSQL_DB'] = 'dating_database'
+app.config['MYSQL_USER'] = 'rsmit216'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'rsmit216'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -734,4 +734,4 @@ def newpage():
 
 if __name__ == '__main__':
     if 'liveconsole' not in gethostname():
-        app.run(host='localhost', port=5001, debug=True)
+        app.run(host='localhost', port=5010, debug=True)
