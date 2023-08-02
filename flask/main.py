@@ -367,7 +367,7 @@ def home():
 
         # User is loggedin show them the home page
         app.logger.info('home: user profile is complete, showing home page')
-        return render_template('home.html', username=session['username'])
+        return render_template('home.html', name=user['first_name'])
 
     # User is not loggedin redirect to login page
     app.logger.info('home: user is not logged in, redirecting to login page')
@@ -626,9 +626,9 @@ def matches():
                'WHERE user.user_ID = %s', (user_ID,))
             matched_user = cursor.fetchone()
             if matched_user:
-                # TODO Calculate the user's age from their birthday
+                # Calculate the user's age from their birthday
                 days_in_year = 365.2425
-                age_calc = int((date.today() - datetime.strptime(matched_user['birthday'], '%Y-%m-%d').date()).days / days_in_year)
+                age_calc = int((date.today() - matched_user['birthday']).days / days_in_year)
                 matched_user['age'] = age_calc
                 matches_info.append(matched_user)
         app.logger.info('matches info: %s', matches_info)
