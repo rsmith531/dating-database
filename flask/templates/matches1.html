@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block title %}Matches{% endblock %}
+
+{% block content %}
+<h2>Matches Page</h2>
+{% if matches_info %}
+    <table>
+        <thead>
+            <th style="width:40%">Name:</th>
+            <th style="width:40%">Email:</th>
+        </thead>
+        {% for match in matches_info %}
+        <tr>
+            <td>{{ match['first_name'] }} {{ match['last_name'] }}</td>
+            <td>{{ match['email'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% else %}
+    <p>No one likes you back. How sad.</p>
+{% endif %}
+
+{% endblock %}

@@ -14,7 +14,7 @@
 '''
 
 import re
-from datetime import date
+from datetime import date, datetime
 from socket import gethostname
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
@@ -28,9 +28,9 @@ app.secret_key = 'dating database'
 
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'qajaq'
-app.config['MYSQL_DB'] = 'dating_database'
+app.config['MYSQL_USER'] = 'rsmit216'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'rsmit216'
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -238,7 +238,7 @@ def complete_profile():
 
     # Output message if something goes wrong...
     msg = ''
-    
+
     # get states and genders to populate dropdowns, hobbies to populate checkboxes
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM state')
@@ -251,7 +251,7 @@ def complete_profile():
     cursor.execute('SELECT * FROM hobby_interests WHERE user_ID = %s;', (session['id'],))
     user_hobbies = cursor.fetchall()
     app.logger.info('user hobbies: %s', user_hobbies)
-    
+
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'firstName' in request.form \
@@ -269,7 +269,7 @@ def complete_profile():
         last_name = request.form['lastName']
         city = request.form['city']
         state = request.form['state']
-        birthday = request.form['birthday']                    # TODO make this a calendar selector
+        birthday = request.form['birthday']
         bio = request.form['bio']
         gender = request.form['gender']
         user_hobbies = request.form.getlist('hobbies')
@@ -367,7 +367,7 @@ def home():
 
         # User is loggedin show them the home page
         app.logger.info('home: user profile is complete, showing home page')
-        return render_template('home.html', username=session['username'])
+        return render_template('home.html', name=user['first_name'])
 
     # User is not loggedin redirect to login page
     app.logger.info('home: user is not logged in, redirecting to login page')
@@ -534,60 +534,6 @@ def delete_account():
 
     return render_template('delete_account.html', msg=msg)
 
-@app.route('/matches1')
-def matches():
-    ''' This page allows you to view your matches
-    '''
-    app.logger.info('home: user at matches page')
-
-    # Check if user is loggedin
-    if 'loggedin' in session:
-
-        app.logger.info('home: user is logged in')
-
-        # Check if user profile is complete
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
-        user = cursor.fetchone()
-        app.logger.info('home: user returned %s', user)
-
-        # redirect to complete profile if profile is not complete
-        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
-            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
-
-            app.logger.info('home: user profile is not complete, redirecting to complete profile')
-            return redirect(url_for('complete_profile'))
-
-        # Query database for matches
-        cursor.execute('SELECT user_ID_2 AS user_ID FROM user_interaction ' \
-               'WHERE status LIKE \'like\' AND user_ID_1 = %s ' \
-               'INTERSECT ' \
-               'SELECT user_ID_1 AS user_ID FROM user_interaction ' \
-               'WHERE status LIKE \'like\' AND user_ID_2 = %s;', (session['id'], session['id'],))
-        match_userIDs = cursor.fetchall()
-        app.logger.info('match query returned %s', match_userIDs)
-
-        # Query database for matched user info
-        matches_info = []
-        for match_userID in match_userIDs:
-            user_ID = match_userID['user_ID']
-            cursor.execute('SELECT user.*, user_email.email FROM user ' \
-               'LEFT JOIN user_email ON user.user_ID = user_email.user_ID ' \
-               'WHERE user.user_ID = %s', (user_ID,))
-            matched_user = cursor.fetchone()
-            if matched_user:
-                matches_info.append(matched_user)
-        app.logger.info('matches info: %s', matches_info)
-
-        # User is loggedin, show the matched page
-        app.logger.info('home: user profile is complete, matches page')
-        return render_template('matches.html', username=session['username'], matches_info = matches_info)
-    
-
-    # User is not loggedin redirect to login page
-    app.logger.info('home: user is not logged in, redirecting to login page')
-    return redirect(url_for('login'))
-
 
 # ----------------------------------------------------------------- http://localhost:5001/browse --
 
@@ -638,45 +584,62 @@ def browse():
 
 # ---------------------------------------------------------------- http://localhost:5001/matches --
 
-@app.route('/matches2')
+@app.route('/matches')
 def matches():
-    ''' show matches for the logged-in user
+    ''' This page allows you to view your matches
     '''
-    app.logger.info('matches: user at matches page')
+    app.logger.info('home: user at matches page')
 
     # Check if user is loggedin
     if 'loggedin' in session:
-        # User is loggedin show them the matches page
 
-        # create cursor to interact with MySQL
+        app.logger.info('home: user is logged in')
+
+        # Check if user profile is complete
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
+        user = cursor.fetchone()
+        app.logger.info('home: user returned %s', user)
 
-        # Query to get the matches 
-        cursor.execute("""
-            SELECT 
-            U.user_ID, U.first_name, U.last_name, 
-            TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
-            U.city, U.state 
-            FROM 
-            user_interaction I1 
-            INNER JOIN 
-            user_interaction I2 
-            ON I1.user_ID_1 = I2.user_ID_2 AND I1.user_ID_2 = I2.user_ID_1 
-            INNER JOIN 
-            user U 
-            ON U.user_ID = I1.user_ID_2 
-            WHERE 
-            I1.user_ID_1 = %s AND I1.status = 'like' AND I2.status = 'like'
-        """, (session['id'],))
+        # redirect to complete profile if profile is not complete
+        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
+            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
 
+            app.logger.info('home: user profile is not complete, redirecting to complete profile')
+            return redirect(url_for('complete_profile'))
 
-        # Fetch all records and return result
-        matches = cursor.fetchall()
+        # Query database for matches
+        cursor.execute('SELECT user_ID_2 AS user_ID FROM user_interaction ' \
+               'WHERE status LIKE \'like\' AND user_ID_1 = %s ' \
+               'INTERSECT ' \
+               'SELECT user_ID_1 AS user_ID FROM user_interaction ' \
+               'WHERE status LIKE \'like\' AND user_ID_2 = %s;', (session['id'], session['id'],))
+        match_userIDs = cursor.fetchall()
+        app.logger.info('match query returned %s', match_userIDs)
 
-        return render_template('matches.html', matches=matches)
+        # Query database for matched user info
+        matches_info = []
+        for match_userID in match_userIDs:
+            user_ID = match_userID['user_ID']
+            cursor.execute('SELECT user.*, user_email.email FROM user ' \
+               'LEFT JOIN user_email ON user.user_ID = user_email.user_ID ' \
+               'WHERE user.user_ID = %s', (user_ID,))
+            matched_user = cursor.fetchone()
+            if matched_user:
+                # Calculate the user's age from their birthday
+                days_in_year = 365.2425
+                age_calc = int((date.today() - matched_user['birthday']).days / days_in_year)
+                matched_user['age'] = age_calc
+                matches_info.append(matched_user)
+        app.logger.info('matches info: %s', matches_info)
+
+        # User is loggedin, show the matched page
+        app.logger.info('home: user profile is complete, matches page')
+        return render_template('matches.html', username=session['username'], matches_info = matches_info)
+
 
     # User is not loggedin redirect to login page
-    app.logger.info('matches: user rerouted to login page')
+    app.logger.info('home: user is not logged in, redirecting to login page')
     return redirect(url_for('login'))
 
 
@@ -695,7 +658,7 @@ def unmatch(user_id):
         # create cursor to interact with MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-        # Query to update the user_interaction status 
+        # Query to update the user_interaction status
         cursor.execute("""
             UPDATE user_interaction
             SET status = 'dislike'
@@ -731,4 +694,4 @@ def newpage():
 
 if __name__ == '__main__':
     if 'liveconsole' not in gethostname():
-        app.run(host='localhost', port=5001, debug=True)
+        app.run(host='localhost', port=5010, debug=True)
