@@ -534,7 +534,7 @@ def delete_account():
 
     return render_template('delete_account.html', msg=msg)
 
-@app.route('/matches')
+@app.route('/matches1')
 def matches():
     ''' This page allows you to view your matches
     '''
@@ -638,7 +638,7 @@ def browse():
 
 # ---------------------------------------------------------------- http://localhost:5001/matches --
 
-@app.route('/matches')
+@app.route('/matches2')
 def matches():
     ''' show matches for the logged-in user
     '''
