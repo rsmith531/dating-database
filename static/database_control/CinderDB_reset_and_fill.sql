@@ -239,7 +239,7 @@ ALTER TABLE `user_interaction`
 ALTER TABLE `user_photo`
   ADD PRIMARY KEY (`photo_ID`),
   ADD KEY `user_ID` (`user_ID`);
-  
+
 --
 -- Indexes for table `age_interests`
 --
@@ -431,6 +431,16 @@ INSERT INTO user_interaction VALUES ('00008', '00010', 'dislike');
 INSERT INTO user_interaction VALUES ('00002', '00008', 'dislike');
 INSERT INTO user_interaction VALUES ('00003', '00008', 'dislike');
 INSERT INTO user_interaction VALUES ('00010', '00001', 'dislike');
+INSERT INTO user_interaction VALUES ('00001', '00001', 'block');
+INSERT INTO user_interaction VALUES ('00002', '00002', 'block');
+INSERT INTO user_interaction VALUES ('00003', '00003', 'block');
+INSERT INTO user_interaction VALUES ('00004', '00004', 'block');
+INSERT INTO user_interaction VALUES ('00005', '00005', 'block');
+INSERT INTO user_interaction VALUES ('00006', '00006', 'block');
+INSERT INTO user_interaction VALUES ('00007', '00007', 'block');
+INSERT INTO user_interaction VALUES ('00008', '00008', 'block');
+INSERT INTO user_interaction VALUES ('00009', '00009', 'block');
+INSERT INTO user_interaction VALUES ('00010', '00010', 'block');
 
 -- USER PHOTO TABLE INSERT
 

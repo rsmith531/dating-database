@@ -27,17 +27,21 @@ app = Flask(__name__)
 app.secret_key = 'dating database'
 
 
-# Enter your database connection details below
+# PythonAnywhere credentials
 app.config['MYSQL_HOST'] = 'smithr.mysql.pythonanywhere-services.com'
 app.config['MYSQL_USER'] = 'smithr'
 app.config['MYSQL_PASSWORD'] = 'Alm0nds&peaches'
 app.config['MYSQL_DB'] = 'smithr$dating-database'
+app.logger.info('administrative: database credentials set to PythonAnywhere configuration')
 
-if 'liveconsole' not in gethostname(): # if on dbdev
-    app.config['MYSQL_HOST'] = 'localhost'
-    app.config['MYSQL_USER'] = 'rsmit216'
-    app.config['MYSQL_PASSWORD'] = 'password'
-    app.config['MYSQL_DB'] = 'rsmit216'
+# dbdev credentials
+'''
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'rsmit216'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'rsmit216'
+app.logger.info('administrative: database credentials set to dbdev configuration')
+'''
 
 # Intialize MySQL
 mysql = MySQL(app)
@@ -580,15 +584,15 @@ def browse():
         if request.method == 'POST':
             # update the status
             cursor.execute("""
-                INSERT INTO user_interaction 
+                INSERT INTO user_interaction
                 (user_ID_1, user_ID_2, status) VALUES (%s, %s, %s)
             """, (session['id'], request.form['user_id'], request.form['status']))
             mysql.connection.commit()
 
         # Query to get users that have not been interacted with
         cursor.execute("""
-            SELECT U.user_ID, U.first_name, U.last_name, 
-                   TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
+            SELECT U.user_ID, U.first_name, U.last_name,
+                   TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age,
                    U.city, U.state, P.file_locale
             FROM user U
             LEFT JOIN user_photo P ON U.user_ID = P.user_ID AND P.photo_pos = 1
