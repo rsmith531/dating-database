@@ -584,8 +584,8 @@ def browse():
 
 # ---------------------------------------------------------------- http://localhost:5001/matches1 --
 
-@app.route('/matches1')
-def matches1():
+@app.route('/matches2')
+def matches2():
     ''' This page allows you to view your matches
     '''
     app.logger.info('home: user at matches page')
@@ -645,9 +645,9 @@ def matches1():
 
 # ---------------------------------------------------------------- http://localhost:5001/matches2 --
 
-@app.route('/matches2')
-def matches2():
-    ''' show matches for the logged-in user
+'''@app.route('/matches3')
+def matches3():
+    ''' '''show matches for the logged-in user'''
     '''
     app.logger.info('matches: user at matches page')
 
@@ -696,7 +696,7 @@ def matches2():
 
     # User is not loggedin redirect to login page
     app.logger.info('matches: user rerouted to login page')
-    return redirect(url_for('login'))
+    return redirect(url_for('login'))'''
 
 
 # ---------------------------------------------------------------- http://localhost:5001/unmatch --
