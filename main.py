@@ -28,20 +28,20 @@ app.secret_key = 'dating database'
 
 
 # PythonAnywhere credentials
+'''
 app.config['MYSQL_HOST'] = 'smithr.mysql.pythonanywhere-services.com'
 app.config['MYSQL_USER'] = 'smithr'
 app.config['MYSQL_PASSWORD'] = 'Alm0nds&peaches'
 app.config['MYSQL_DB'] = 'smithr$dating-database'
 app.logger.info('administrative: database credentials set to PythonAnywhere configuration')
+'''
 
 # dbdev credentials
-'''
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'rsmit216'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'rsmit216'
 app.logger.info('administrative: database credentials set to dbdev configuration')
-'''
 
 # Intialize MySQL
 mysql = MySQL(app)
