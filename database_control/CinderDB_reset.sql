@@ -12,19 +12,25 @@ SET time_zone = "+00:00";
 -- Drop and replace tables
 --
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `status`;
+DROP TABLE IF EXISTS `access_control`;
 DROP TABLE IF EXISTS `state`;
 DROP TABLE IF EXISTS `age_interests`;
 DROP TABLE IF EXISTS `gender_interests`;
-DROP TABLE IF EXISTS `hobby_interests`;
 DROP TABLE IF EXISTS `hobbies`;
+DROP TABLE IF EXISTS `hobby_interests`;
 DROP TABLE IF EXISTS `user_email`;
 DROP TABLE IF EXISTS `user_interaction`;
 DROP TABLE IF EXISTS `user_photo`;
-DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `gender`;
-DROP TABLE IF EXISTS `access_control`;
+DROP TABLE IF EXISTS `user`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
 COMMIT;
+
 
 -- --------------------------------------------------------
 

@@ -3,31 +3,23 @@
 {% block title %}Matches{% endblock %}
 
 {% block content %}
-<h2>Your Matches</h2>
-<div>
-    <p>Here are the profiles of users that liked you and you liked back:</p>
-    <div class="grid-container">
-        {% for match in matches %}
-        <div class="profile-card">
-            <h3>{{ match['first_name'] }} {{ match['last_name'] }}</h3>
-            <table>
-                <tr>
-                    <td>Age:</td>
-                    <td>{{ match['age'] }} years old</td>
-                </tr>
-                <tr>
-                    <td>Location:</td>
-                    <td>{{ match['city'] }}, {{ match['state'] }}</td>
-                </tr>
-            </table>
-              <form method="post" action="{{ url_for('unmatch', user_id=match['user_ID']) }}">
-                <button type="submit">Unmatch</button>
-            </form>
-             </div>
+<h2>Matches Page</h2>
+{% if matches_info %}
+    <table>
+        <thead>
+            <th style="width:40%">Name:</th>
+            <th style="width:40%">Email:</th>
+        </thead>
+        {% for match in matches_info %}
+        <tr>
+            <td>{{ match['first_name'] }} {{ match['last_name'] }}</td>
+            <td>{{ match['email'] }}</td>
+        </tr>
         {% endfor %}
-    </div>
-</div>
-<div>
-    <a href="{{ url_for('profile') }}">Back to Profile</a>
-</div>
+    </table>
+    
+{% else %}
+    <p>No one likes you back. How sad.</p>
+{% endif %}
+
 {% endblock %}

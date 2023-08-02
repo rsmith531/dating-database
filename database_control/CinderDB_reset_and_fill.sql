@@ -12,18 +12,23 @@ SET time_zone = "+00:00";
 -- Drop and replace tables
 --
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `status`;
+DROP TABLE IF EXISTS `access_control`;
 DROP TABLE IF EXISTS `state`;
 DROP TABLE IF EXISTS `age_interests`;
 DROP TABLE IF EXISTS `gender_interests`;
-DROP TABLE IF EXISTS `hobby_interests`;
 DROP TABLE IF EXISTS `hobbies`;
+DROP TABLE IF EXISTS `hobby_interests`;
 DROP TABLE IF EXISTS `user_email`;
 DROP TABLE IF EXISTS `user_interaction`;
 DROP TABLE IF EXISTS `user_photo`;
-DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `gender`;
-DROP TABLE IF EXISTS `access_control`;
+DROP TABLE IF EXISTS `user`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
 COMMIT;
 
 -- --------------------------------------------------------
@@ -429,19 +434,19 @@ INSERT INTO user_interaction VALUES ('00010', '00001', 'dislike');
 
 -- USER PHOTO TABLE INSERT
 
-INSERT INTO user_photo VALUES ('00001', '00001', '/bfy1.jpg', '1');
-INSERT INTO user_photo VALUES ('00002', '00002', '/afy1.jpg', '1');
-INSERT INTO user_photo VALUES ('00003', '00003', '/wmo1.jpg', '1');
-INSERT INTO user_photo VALUES ('00004', '00004', '/bmy1.jpg', '1');
-INSERT INTO user_photo VALUES ('00005', '00005', '/wfy4.jpg', '1');
-INSERT INTO user_photo VALUES ('00006', '00006', '/wfy3.jpg', '1');
-INSERT INTO user_photo VALUES ('00007', '00007', '/wmy1.jpg', '1');
-INSERT INTO user_photo VALUES ('00008', '00008', '/wmy2.jpg', '1');
-INSERT INTO user_photo VALUES ('00009', '00009', '/pfy1.jpg', '1');
-INSERT INTO user_photo VALUES ('00010', '00010', '/wfy1.jpg', '1');
-INSERT INTO user_photo VALUES ('00011', '00007', '/wmy3.jpg', '2');
-INSERT INTO user_photo VALUES ('00012', '00007', '/wmy4.jpg', '3');
-INSERT INTO user_photo VALUES ('00013', '00010', '/wfy2.jpg', '2');
+INSERT INTO user_photo VALUES ('1', '1', '/1_1.jpg', '1');
+INSERT INTO user_photo VALUES ('2', '2', '/2_1.jpg', '1');
+INSERT INTO user_photo VALUES ('3', '3', '/3_1.jpg', '1');
+INSERT INTO user_photo VALUES ('4', '4', '/4_1.jpg', '1');
+INSERT INTO user_photo VALUES ('5', '5', '/5_1.jpg', '1');
+INSERT INTO user_photo VALUES ('6', '6', '/6_1.jpg', '1');
+INSERT INTO user_photo VALUES ('7', '7', '/7_1.jpg', '1');
+INSERT INTO user_photo VALUES ('8', '8', '/8_1.jpg', '1');
+INSERT INTO user_photo VALUES ('9', '9', '/9_1.jpg', '1');
+INSERT INTO user_photo VALUES ('10', '10', '/10_1.jpg', '1');
+INSERT INTO user_photo VALUES ('11', '7', '/7_2.jpg', '2');
+INSERT INTO user_photo VALUES ('12', '7', '/7_3.jpg', '3');
+INSERT INTO user_photo VALUES ('13', '10', '/10_2.jpg', '2');
 
 INSERT INTO access_control VALUES (1, 'jjones', 'hCRDacCE', '596ff907ae907389362029d7540fe600dfbd6d9f5c5e0c0619993a47a451ac55', 'pXTiBZSazf9lhPzwqDAi');
 INSERT INTO access_control VALUES (2, 'aspencer', 'B75KPaHU', '9945dcd0c7dfa5e726253b4483dc075915c236404d0fa5178af9b6beb6241836', 'kXDZXJeG3yDUCgeovqNu');
