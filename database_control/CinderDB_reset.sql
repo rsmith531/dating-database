@@ -87,6 +87,16 @@ CREATE TABLE `hobby_interests` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `state`
+--
+
+CREATE TABLE `state` (
+  `state` varchar(2) NOT NULL
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -190,6 +200,12 @@ ALTER TABLE `hobbies`
   ADD PRIMARY KEY (`hobby_name`);
 
 --
+-- Indexes for table `state`
+--
+ALTER TABLE `state`
+  ADD PRIMARY KEY (`state`);
+
+--
 -- Indexes for table `hobby_interests`
 --
 ALTER TABLE `hobby_interests`
@@ -259,7 +275,8 @@ ALTER TABLE `hobby_interests`
 -- Constraints for table `user`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`gender_ID`) REFERENCES `gender` (`gender_ID`);
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`gender_ID`) REFERENCES `gender` (`gender_ID`),
+  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`state`) REFERENCES `state` (`state`);
 
 --
 -- Constraints for table `user_email`
