@@ -647,8 +647,7 @@ def matches2():
 
 '''@app.route('/matches3')
 def matches3():
-    ''' '''show matches for the logged-in user'''
-    '''
+    # show matches for the logged-in user
     app.logger.info('matches: user at matches page')
 
     # Check if user is loggedin
