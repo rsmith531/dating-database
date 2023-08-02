@@ -251,7 +251,11 @@ def complete_profile():
     cursor.execute('SELECT * FROM hobby_interests WHERE user_ID = %s;', (session['id'],))
     user_hobbies = cursor.fetchall()
     app.logger.info('user hobbies: %s', user_hobbies)
-    
+
+    # get photos data for current user
+    cursor.execute('SELECT * FROM user_photo WHERE user_ID = %s;', (session['id'],))
+    photos = cursor.fetchall()
+    app.logger.info('user photos: %s', photos)
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'firstName' in request.form \
@@ -269,10 +273,11 @@ def complete_profile():
         last_name = request.form['lastName']
         city = request.form['city']
         state = request.form['state']
-        birthday = request.form['birthday']                    # TODO make this a calendar selector
+        birthday = request.form['birthday']
         bio = request.form['bio']
         gender = request.form['gender']
         user_hobbies = request.form.getlist('hobbies')
+
 
         app.logger.info('UPDATED HOBBIES: %s', user_hobbies)
 
@@ -330,13 +335,13 @@ def complete_profile():
         app.logger.info('complete_profile.')
         # Show new profile form with message (if any)
         return render_template('complete_profile.html', \
-                                msg=msg, user=user, states=states, genders=genders, hobbies=hobbies, user_hobbies=user_hobbies)
+                                msg=msg, user=user, states=states, genders=genders, hobbies=hobbies, user_hobbies=user_hobbies, photos=photos)
 
     user = None
 
     # Show new profile form with message (if any)
     return render_template('complete_profile.html', \
-                           msg=msg, user=user, states=states, genders=genders, hobbies=hobbies, user_hobbies=user_hobbies)
+                           msg=msg, user=user, states=states, genders=genders, hobbies=hobbies, user_hobbies=user_hobbies, photos=photos)
 
 
 # ------------------------------------------------------------------- http://localhost:5001/home --
@@ -534,7 +539,7 @@ def delete_account():
 
     return render_template('delete_account.html', msg=msg)
 
-@app.route('/matches1')
+@app.route('/matches')
 def matches():
     ''' This page allows you to view your matches
     '''
@@ -637,7 +642,7 @@ def browse():
 
 
 # ---------------------------------------------------------------- http://localhost:5001/matches --
-
+"""
 @app.route('/matches2')
 def matches():
     ''' show matches for the logged-in user
@@ -652,7 +657,7 @@ def matches():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
         # Query to get the matches 
-        cursor.execute("""
+        cursor.execute(
             SELECT 
             U.user_ID, U.first_name, U.last_name, 
             TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
@@ -667,7 +672,7 @@ def matches():
             ON U.user_ID = I1.user_ID_2 
             WHERE 
             I1.user_ID_1 = %s AND I1.status = 'like' AND I2.status = 'like'
-        """, (session['id'],))
+        , (session['id'],))
 
 
         # Fetch all records and return result
@@ -679,7 +684,7 @@ def matches():
     app.logger.info('matches: user rerouted to login page')
     return redirect(url_for('login'))
 
-
+"""
 # ---------------------------------------------------------------- http://localhost:5001/unmatch --
 
 @app.route('/unmatch/<int:user_id>', methods=['POST'])

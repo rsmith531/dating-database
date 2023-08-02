@@ -61,9 +61,48 @@
 				</div>
 				{% endfor %}
 
+				{% for photo in photos %}
+				<div>
+    				<p>Photo {{ photo['photo_pos'] }}:</p>
+    				<input type="file" name="{{ user['user_ID'] }}_{{ photo['photo_pos'] }}" id="image{{ photo['photo_pos'] }}" accept=".jpg">
+					<button type="button" onclick="clearFile('image1')">Clear</button>
+				</div>
+				{% endfor %}
+
+				{% if photos|length < 1 %}
+				<div>
+    				<p>Photo 1:</p>
+    				<input type="file" name="{{ user['user_ID'] }}_1" id="empty_image1" accept=".jpg">
+					<button type="button" onclick="clearFile('empty_image1')">Clear</button>
+					</div>
+				{% endif %}
+
+				{% if photos|length < 2 %}
+				<div>
+    				<p>Photo 2:</p>
+    				<input type="file" name="{{ user['user_ID'] }}_2" id="empty_image2" accept=".jpg">
+					<button type="button" onclick="clearFile('empty_image2')">Clear</button>
+					</div>
+				{% endif %}
+
+				{% if photos|length < 3 %}
+				<div>
+    				<p>Photo 3:</p>
+    				<input type="file" name="{{ user['user_ID'] }}_3" id="empty_image3" accept=".jpg">
+					<button type="button" onclick="clearFile('empty_image3')">Clear</button>
+					</div>
+				{% endif %}
+
 				<div class="msg">{{ msg }}</div>
 				<input type="submit" value="Complete Profile">
 			</form>
 		</div>
 	</body>
 </html>
+
+<script>
+	function clearFile(input) {
+        var input = document.getElementById(input);
+        input.value = '';
+    }
+</script>
