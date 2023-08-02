@@ -534,60 +534,6 @@ def delete_account():
 
     return render_template('delete_account.html', msg=msg)
 
-@app.route('/matches1')
-def matches():
-    ''' This page allows you to view your matches
-    '''
-    app.logger.info('home: user at matches page')
-
-    # Check if user is loggedin
-    if 'loggedin' in session:
-
-        app.logger.info('home: user is logged in')
-
-        # Check if user profile is complete
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
-        user = cursor.fetchone()
-        app.logger.info('home: user returned %s', user)
-
-        # redirect to complete profile if profile is not complete
-        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
-            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
-
-            app.logger.info('home: user profile is not complete, redirecting to complete profile')
-            return redirect(url_for('complete_profile'))
-
-        # Query database for matches
-        cursor.execute('SELECT user_ID_2 AS user_ID FROM user_interaction ' \
-               'WHERE status LIKE \'like\' AND user_ID_1 = %s ' \
-               'INTERSECT ' \
-               'SELECT user_ID_1 AS user_ID FROM user_interaction ' \
-               'WHERE status LIKE \'like\' AND user_ID_2 = %s;', (session['id'], session['id'],))
-        match_userIDs = cursor.fetchall()
-        app.logger.info('match query returned %s', match_userIDs)
-
-        # Query database for matched user info
-        matches_info = []
-        for match_userID in match_userIDs:
-            user_ID = match_userID['user_ID']
-            cursor.execute('SELECT user.*, user_email.email FROM user ' \
-               'LEFT JOIN user_email ON user.user_ID = user_email.user_ID ' \
-               'WHERE user.user_ID = %s', (user_ID,))
-            matched_user = cursor.fetchone()
-            if matched_user:
-                matches_info.append(matched_user)
-        app.logger.info('matches info: %s', matches_info)
-
-        # User is loggedin, show the matched page
-        app.logger.info('home: user profile is complete, matches page')
-        return render_template('matches.html', username=session['username'], matches_info = matches_info)
-    
-
-    # User is not loggedin redirect to login page
-    app.logger.info('home: user is not logged in, redirecting to login page')
-    return redirect(url_for('login'))
-
 
 # ----------------------------------------------------------------- http://localhost:5001/browse --
 
@@ -636,10 +582,67 @@ def browse():
     return redirect(url_for('login'))
 
 
-# ---------------------------------------------------------------- http://localhost:5001/matches --
+# ---------------------------------------------------------------- http://localhost:5001/matches1 --
+
+@app.route('/matches1')
+def matches1():
+    ''' This page allows you to view your matches
+    '''
+    app.logger.info('home: user at matches page')
+
+    # Check if user is loggedin
+    if 'loggedin' in session:
+
+        app.logger.info('home: user is logged in')
+
+        # Check if user profile is complete
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
+        user = cursor.fetchone()
+        app.logger.info('home: user returned %s', user)
+
+        # redirect to complete profile if profile is not complete
+        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
+            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
+
+            app.logger.info('home: user profile is not complete, redirecting to complete profile')
+            return redirect(url_for('complete_profile'))
+
+        # Query database for matches
+        cursor.execute('SELECT user_ID_2 AS user_ID FROM user_interaction ' \
+               'WHERE status LIKE \'like\' AND user_ID_1 = %s ' \
+               'INTERSECT ' \
+               'SELECT user_ID_1 AS user_ID FROM user_interaction ' \
+               'WHERE status LIKE \'like\' AND user_ID_2 = %s;', (session['id'], session['id'],))
+        match_userIDs = cursor.fetchall()
+        app.logger.info('match query returned %s', match_userIDs)
+
+        # Query database for matched user info
+        matches_info = []
+        for match_userID in match_userIDs:
+            user_ID = match_userID['user_ID']
+            cursor.execute('SELECT user.*, user_email.email FROM user ' \
+               'LEFT JOIN user_email ON user.user_ID = user_email.user_ID ' \
+               'WHERE user.user_ID = %s', (user_ID,))
+            matched_user = cursor.fetchone()
+            if matched_user:
+                matches_info.append(matched_user)
+        app.logger.info('matches info: %s', matches_info)
+
+        # User is loggedin, show the matched page
+        app.logger.info('home: user profile is complete, matches page')
+        return render_template('matches1.html', username=session['username'], matches_info = matches_info)
+    
+
+    # User is not loggedin redirect to login page
+    app.logger.info('home: user is not logged in, redirecting to login page')
+    return redirect(url_for('login'))
+
+
+# ---------------------------------------------------------------- http://localhost:5001/matches2 --
 
 @app.route('/matches2')
-def matches():
+def matches2():
     ''' show matches for the logged-in user
     '''
     app.logger.info('matches: user at matches page')
@@ -673,7 +676,7 @@ def matches():
         # Fetch all records and return result
         matches = cursor.fetchall()
 
-        return render_template('matches.html', matches=matches)
+        return render_template('matches2.html', matches=matches)
 
     # User is not loggedin redirect to login page
     app.logger.info('matches: user rerouted to login page')
