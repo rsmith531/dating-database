@@ -26,11 +26,18 @@ app = Flask(__name__)
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'dating database'
 
-# Enter your database connection details below
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'rsmit216'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'rsmit216'
+
+    # Enter your database connection details below
+if 'liveconsole' not in gethostname(): # if on dbdev
+    app.config['MYSQL_HOST'] = 'localhost'
+    app.config['MYSQL_USER'] = 'rsmit216'
+    app.config['MYSQL_PASSWORD'] = 'password'
+    app.config['MYSQL_DB'] = 'rsmit216'
+else: # if on PythonAnywhere
+    app.config['MYSQL_HOST'] = 'smithr.mysql.pythonanywhere-services.com'
+    app.config['MYSQL_USER'] = 'smithr'
+    app.config['MYSQL_PASSWORD'] = 'Alm0nds&peaches'
+    app.config['MYSQL_DB'] = 'smithr$dating-database'
 
 # Intialize MySQL
 mysql = MySQL(app)
