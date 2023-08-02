@@ -278,7 +278,7 @@ def complete_profile():
 
         # Calculate the user's age from their birthday
         days_in_year = 365.2425
-        age_calc = int((date.today() - datetime.strptime(birthday, '%y-%m-%d').days) / days_in_year)
+        age_calc = int((date.today() - datetime.strptime(birthday, '%Y-%m-%d').date()).days / days_in_year)
 
         # cursor to update user with profile information
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -689,4 +689,4 @@ def newpage():
 
 if __name__ == '__main__':
     if 'liveconsole' not in gethostname():
-        app.run(host='localhost', port=5001, debug=True)
+        app.run(host='localhost', port=5010, debug=True)
