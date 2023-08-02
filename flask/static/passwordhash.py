@@ -1,11 +1,11 @@
 ''' password hashing helper functions
 
     Developed by:
-        Sidney Raabe
-        Dennis Saralino
-        Ryan Smith
-        Eric Stauss
-        Erik Zavarelli
+        Sidney R
+        Dennis S
+        Ryan S
+        Eric S
+        Erik Z
 
     For:
         CS 33007 Database Systems
