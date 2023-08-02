@@ -238,7 +238,7 @@ def complete_profile():
 
     # Output message if something goes wrong...
     msg = ''
-    
+
     # get states and genders to populate dropdowns, hobbies to populate checkboxes
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM state')
@@ -251,7 +251,7 @@ def complete_profile():
     cursor.execute('SELECT * FROM hobby_interests WHERE user_ID = %s;', (session['id'],))
     user_hobbies = cursor.fetchall()
     app.logger.info('user hobbies: %s', user_hobbies)
-    
+
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST' and 'firstName' in request.form \
@@ -636,66 +636,11 @@ def matches():
         # User is loggedin, show the matched page
         app.logger.info('home: user profile is complete, matches page')
         return render_template('matches.html', username=session['username'], matches_info = matches_info)
-    
+
 
     # User is not loggedin redirect to login page
     app.logger.info('home: user is not logged in, redirecting to login page')
     return redirect(url_for('login'))
-
-
-# ---------------------------------------------------------------- http://localhost:5001/matches2 --
-
-'''@app.route('/matches3')
-def matches3():
-    # show matches for the logged-in user
-    app.logger.info('matches: user at matches page')
-
-    # Check if user is loggedin
-    if 'loggedin' in session:
-        # User is loggedin show them the matches page
-
-        app.logger.info('home: user is logged in')
-
-        # Check if user profile is complete
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM user WHERE user_id = %s', (session['id'],)) # get from cookie
-        user = cursor.fetchone()
-        app.logger.info('home: user returned %s', user)
-
-        # redirect to complete profile if profile is not complete
-        if user['first_name'] is None or user['last_name'] is None or user['city'] is None \
-            or user['state'] is None or user['birthday'] is None or user['bio'] is None:
-
-            app.logger.info('home: user profile is not complete, redirecting to complete profile')
-            return redirect(url_for('complete_profile'))
-
-        # Query to get the matches
-        cursor.execute("""
-            SELECT 
-            U.user_ID, U.first_name, U.last_name, 
-            TIMESTAMPDIFF(YEAR, U.birthday, CURDATE()) AS age, 
-            U.city, U.state 
-            FROM 
-            user_interaction I1 
-            INNER JOIN 
-            user_interaction I2 
-            ON I1.user_ID_1 = I2.user_ID_2 AND I1.user_ID_2 = I2.user_ID_1 
-            INNER JOIN 
-            user U 
-            ON U.user_ID = I1.user_ID_2 
-            WHERE 
-            I1.user_ID_1 = %s AND I1.status = 'like' AND I2.status = 'like'
-        """, (session['id'],))
-
-
-        # Fetch all records and return result
-        matches = cursor.fetchall()
-
-        return render_template('matches2.html', matches=matches)
-
-    # User is not loggedin redirect to login page
-    app.logger.info('matches: user rerouted to login page')
-    return redirect(url_for('login'))'''
 
 
 # ---------------------------------------------------------------- http://localhost:5001/unmatch --
@@ -713,7 +658,7 @@ def unmatch(user_id):
         # create cursor to interact with MySQL
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-        # Query to update the user_interaction status 
+        # Query to update the user_interaction status
         cursor.execute("""
             UPDATE user_interaction
             SET status = 'dislike'
