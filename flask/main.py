@@ -538,6 +538,7 @@ def delete_account():
             return render_template('delete_account.html', msg=msg)
 
         # Delete the user from the database
+        cursor.execute('DELETE FROM user_interaction WHERE user_ID_1 = %s', (session['id'],))
         cursor.execute('DELETE FROM hobby_interests WHERE user_ID = %s', (session['id'],))
         cursor.execute('DELETE FROM access_control WHERE user_ID = %s', (session['id'],))
         cursor.execute('DELETE FROM user WHERE user_ID = %s', (session['id'],))
